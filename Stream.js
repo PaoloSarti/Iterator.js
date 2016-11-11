@@ -130,6 +130,29 @@ Stream = function(iter){
     }
 
     /**
+     * Groups the elements of the Stream using as key the result of function f applied to every element
+     */
+    this.groupBy = function(f){
+        var obj = {}
+        this.forEach(e=>{
+            var key  = f(e)
+            if(obj[key]===undefined){
+                obj[key]=[e]
+            }
+            else {
+                obj[key].push(e)
+            }
+        })
+        return obj
+    }
+
+    /**
+     * Partitions the elements of a Stream 
+     */
+    this.partition = this.groupBy
+    this.partitionBy = this.groupBy
+
+    /**
      * Applies f on an accumulator (initiated with start) and every element of the Stream.
      * Returns a single value
      */

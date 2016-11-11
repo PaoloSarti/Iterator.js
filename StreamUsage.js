@@ -35,3 +35,11 @@ map.set('key1', 12)
 map.set('key2',"hi")
 console.log(map)
 console.log(Stream.from(map).toArray())
+
+console.log('GROUP BY')
+var s = Stream.from('hi how are you?'.split(' '))
+console.log(s.groupBy(s=>s[0]))
+
+console.log('PARTITION')
+var s = Stream.from('hi how are you?'.split(' '))
+console.log(s.partition(s=>s.length===3))
