@@ -98,6 +98,51 @@ Stream = function(iter){
         return new Stream(takeWhileGen())
     }
 
+
+    //HEAVY METHODS
+    //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!
+    /**
+     * Returns a sorted version of the stream, according to natural ordering or accarding to a compare function
+     */
+    this.sorted = function(){
+        var array = this.toArray()
+
+        if(arguments.length === 0){
+            array.sort()
+        }else{
+            array.sort(arguments[0])
+        }
+
+        var arrayGen = function*(){
+            for(var e of array){
+                yield e
+            }
+        }
+
+        return new Stream(arrayGen())
+    }
+
+    /**
+     * alias
+     */
+    this.sort = this.sorted
+
+    /**
+     * distinct
+     */
+    this.distinct = function(){
+        var distinctGen = function*(){
+            var s = new Set()
+            for(var e of iter){
+                if(!s.has(e)){
+                    s.add(e)
+                    yield e
+                }
+            }
+        }
+        return new Stream(distinctGen())
+    }
+
     //EAGER METHODS
     //THEY CONSUME THE STREAM!
 
@@ -108,6 +153,25 @@ Stream = function(iter){
         for(var i of iter){
             f(i)
         }
+    }
+
+    /**
+     * process(n,f)
+     * process n elements with the function f
+     * Like forEach, but only for the first n elements, then returns the rest of the Stream
+     */
+    this.process = function(n, f){
+        var ended = false
+        for(var i=0; i<n && !ended; i++){
+            var e = iter.next()
+            if(e.done){
+                ended = true
+            }
+            else{
+                f(e.value)
+            }
+        }
+        return this
     }
 
     /**
@@ -174,6 +238,11 @@ Stream = function(iter){
         }
         return acc
     }
+
+    /**
+     * count alias
+     */
+    this.size = this.count
 
     /**
      * Returns the first element
@@ -319,7 +388,7 @@ Stream.from = function(a){
         return Stream.empty()
     
     //if array or Set
-    if(a.constructor === Array || a.constructor === Set)
+    if(a.constructor === Array || a.constructor === Set || typeof a === 'string')
         return new Stream(a[Symbol.iterator]())
 
     //if Map
