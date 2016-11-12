@@ -43,3 +43,22 @@ console.log(s.groupBy(s=>s[0]))
 console.log('PARTITION')
 var s = Stream.from('hi how are you?'.split(' '))
 console.log(s.partition(s=>s.length===3))
+
+console.log('STREAM FROM ITERATOR (CREATED WITH A GENERATOR)')
+var fibs = function*(){
+    var a = 0
+    var b = 1
+    yield a
+    yield b
+    while(true){
+        var c = a + b
+        a = b
+        b = c
+        yield b
+    }
+}
+//a Stream is really just a wrapper of iterators, so the constructor only takes iterators
+var f = new Stream(fibs())
+//the first ten even fibonacci numbers
+console.log(f.filter(i=>i%2==0).limit(10).toArray())
+
