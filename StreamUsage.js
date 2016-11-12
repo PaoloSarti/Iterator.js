@@ -19,6 +19,9 @@ for(var e of circular.take(8)){
     console.log(e)
 }
 
+console.log('STREAM OF ARGUMENTS')
+Stream.of(1,2,3).log()
+
 console.log('OBJECT STREAM')
 Stream.from({a:2,b:'hola'}).log()
 
