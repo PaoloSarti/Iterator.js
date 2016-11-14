@@ -74,8 +74,21 @@ Stream = function(iter){
     this.filter = function(f){
         var filterGen = function*(){
             for(var i of iter){
-                if(f(i)===true){
-                    yield i
+                if(typeof f === 'function'){
+                    if(f(i)===true){
+                        yield i
+                    }
+                }
+                else if(typeof f === 'object'){
+                    var allMatch = true
+                    for(var name in f){
+                        if(i[name] !== f[name]){
+                            allMatch = false
+                        }
+                    }
+                    if(allMatch){
+                        yield i
+                    }
                 }
             }
         }
