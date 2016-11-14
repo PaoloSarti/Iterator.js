@@ -71,3 +71,6 @@ var s = Stream.generate(()=>Math.floor(Math.random()*100))
 
 console.log('SORTED BY PROPERTY')
 console.log(Stream.tabulate(i=>{ return {a:i,b:10-i};}).take(10).sorted('b').toArray())
+
+console.log('REVERSED')
+console.log(Stream.of(3,2,1,4).reversed().toArray())

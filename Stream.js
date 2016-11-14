@@ -9,12 +9,12 @@
  * 
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
  */
-Stream = function(iter){
+Stream = function(iterator){
 
     /**
      * iterator
      */
-    this[Symbol.iterator] = ()=>iter
+    this[Symbol.iterator] = ()=>iterator
     
     /**
      * returns a new Stream that can iterate only on the first n elements (or less) of the stream
@@ -22,7 +22,7 @@ Stream = function(iter){
     this.take = function(n){
         var takeGen = function*(){
             for(var i=0; i<n; i++){
-                var next = iter.next()
+                var next = iterator.next()
                 if(next.done === false)
                     yield next.value
             }
@@ -42,12 +42,12 @@ Stream = function(iter){
     this.skip = function(n){
         var ended = false
         for(var i=0; (i<n)&&(!ended); i++){
-            var next = iter.next()
+            var next = iterator.next()
             ended = next.done
         }
         var skipGen = function*(){
             if(!ended){
-                for(var j of iter){
+                for(var j of iterator){
                     yield j
                 }
             }
@@ -61,7 +61,7 @@ Stream = function(iter){
      */
     this.map = function(f){
         var mapGen = function*(){
-            for(var i of iter){
+            for(var i of iterator){
                 yield f(i)
             }
         }
@@ -74,7 +74,7 @@ Stream = function(iter){
      */
     this.filter = function(f){
         var filterGen = function*(){
-            for(var i of iter){
+            for(var i of iterator){
                 if(typeof f === 'function'){
                     if(f(i)===true){
                         yield i
@@ -102,7 +102,7 @@ Stream = function(iter){
      */
     this.takeWhile = function(f){
         var takeWhileGen = function*(){
-            for(var i of iter){
+            for(var i of iterator){
                 if(f(i)){
                     yield i
                 }
@@ -155,7 +155,7 @@ Stream = function(iter){
     this.distinct = function(){
         var distinctGen = function*(){
             var s = new Set()
-            for(var e of iter){
+            for(var e of iterator){
                 if(!s.has(e)){
                     s.add(e)
                     yield e
@@ -165,6 +165,19 @@ Stream = function(iter){
         return new Stream(distinctGen())
     }
 
+    this.reversed = function(){
+        var thisInstance = this
+        var revGen = function*(){
+            var array = thisInstance.toArray().reverse()
+            for(var e of array){
+                yield e
+            }
+        }
+        return new Stream(revGen())
+    }
+
+    this.reverse = this.reversed
+
     //EAGER METHODS
     //THEY CONSUME THE STREAM!
 
@@ -172,7 +185,7 @@ Stream = function(iter){
      * Executes f(e) for every element e of the stream
      */
     this.forEach = function(f){
-        for(var i of iter){
+        for(var i of iterator){
             f(i)
         }
     }
@@ -185,7 +198,7 @@ Stream = function(iter){
     this.process = function(n, f){
         var ended = false
         for(var i=0; i<n && !ended; i++){
-            var e = iter.next()
+            var e = iterator.next()
             if(e.done){
                 ended = true
             }
@@ -207,7 +220,7 @@ Stream = function(iter){
      * Finds the first occurence of an element e that satisfies f(e) and returns it
      */
     this.find = function(f){
-        for(var i of iter){
+        for(var i of iterator){
             if(f(i)===true){
                 return i
             }
@@ -252,7 +265,7 @@ Stream = function(iter){
      */
     this.reduce = function(f,start){
         var acc = start
-        for(var i of iter){
+        for(var i of iterator){
             acc = f(acc, i)
         }
         return acc
@@ -263,7 +276,7 @@ Stream = function(iter){
      */
     this.count = function(){
         var acc = 0
-        for(var i of iter){
+        for(var i of iterator){
             acc+=1
         }
         return acc
@@ -278,7 +291,7 @@ Stream = function(iter){
      * Returns the first element
      */
     this.first = function(){
-        for(var i of iter){
+        for(var i of iterator){
             return i
         }
     }
@@ -288,7 +301,7 @@ Stream = function(iter){
      */
     this.last = function(){
         var l
-        for(var i of iter){
+        for(var i of iterator){
             l=i
         }
         return l
@@ -299,10 +312,20 @@ Stream = function(iter){
      */
     this.sum = function(){
         var acc = 0
-        for(var i of iter){
+        for(var i of iterator){
             acc+=i
         }
         return acc
+    }
+
+    /**
+     * Average
+     */
+    this.avg = function(){
+        var array = this.toArray()
+        var sum = array.reduce((a,b)=>a+b)
+        var count = array.length
+        return sum / count
     }
 
     /**
@@ -310,10 +333,10 @@ Stream = function(iter){
      */
     this.toArray = function(){
         var a = []
-        var next = iter.next()
+        var next = iterator.next()
         while(next.done === false){
             a.push(next.value)
-            next = iter.next()
+            next = iterator.next()
         }
         return a
     }
