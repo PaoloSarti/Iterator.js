@@ -69,7 +69,8 @@ Stream = function(iter){
     }
 
     /**
-     * Filters every element, if the function f returns true, the element will be present also in the new Stream.
+     * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
+     *  the element will be present in the returned Stream.
      */
     this.filter = function(f){
         var filterGen = function*(){
@@ -115,18 +116,26 @@ Stream = function(iter){
     //HEAVY METHODS
     //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!
     /**
-     * Returns a sorted version of the stream, according to natural ordering or accarding to a compare function
+     * Returns a sorted version of the stream, according to natural ordering or according to a compare function, or by natural ordering of a property
      */
     this.sorted = function(){
-        var array = this.toArray()
-
-        if(arguments.length === 0){
-            array.sort()
-        }else{
-            array.sort(arguments[0])
-        }
-
+        var thisInstance = this
+        var args = arguments
         var arrayGen = function*(){
+            var array = thisInstance.toArray()
+            if(args.length === 0){
+                array.sort()
+            }else if(typeof args[0] === 'string'){
+                var name = args[0]
+                array.sort((a,b)=>{
+                    if(a[name]<b[name])
+                        return -1
+                    else if(a[name]>b[name])
+                        return 1
+                    else
+                        return 0
+                })
+            }
             for(var e of array){
                 yield e
             }
@@ -207,12 +216,20 @@ Stream = function(iter){
     }
 
     /**
-     * Groups the elements of the Stream using as key the result of function f applied to every element
+     * Groups the elements of the Stream using as key the result of function f applied to every element.
+     * Or, if you pass a String, groups by that property (in a stream of objects)
      */
     this.groupBy = function(f){
         var obj = {}
         this.forEach(e=>{
-            var key  = f(e)
+            var key
+            if(typeof f === 'function'){
+                key  = f(e)
+            }
+            else if(typeof f === 'string'){
+                key = e[f]
+            }
+
             if(obj[key]===undefined){
                 obj[key]=[e]
             }

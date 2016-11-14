@@ -67,4 +67,7 @@ console.log(f.filter(i=>i%2==0).limit(10).toArray())
 
 console.log('SORTED')
 var s = Stream.generate(()=>Math.floor(Math.random()*100))
-console.log(s.take(10).sorted().toArray())
+//console.log(s.take(10).sorted().toArray())
+
+console.log('SORTED BY PROPERTY')
+console.log(Stream.tabulate(i=>{ return {a:i,b:10-i};}).take(10).sorted('b').toArray())
