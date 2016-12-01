@@ -111,7 +111,21 @@ Stream = function(iterator){
         }
         return new Stream(takeWhileGen())
     }
-
+    
+    /**
+     * Concats any iterable lazily. Returns a new Stream
+     */
+    this.concat = function(s){
+        var concatGen = function*(){
+            for(var i of iterator){
+                yield i
+            }
+            for(var i of s){
+                yield i
+            }
+        }
+        return new Stream(concatGen())
+    }
 
     //HEAVY METHODS
     //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!

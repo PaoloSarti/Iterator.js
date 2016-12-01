@@ -74,3 +74,6 @@ console.log(Stream.tabulate(i=>{ return {a:i,b:10-i};}).take(10).sorted('b').toA
 
 console.log('REVERSED')
 console.log(Stream.of(3,2,1,4).reversed().toArray())
+
+console.log('CONCAT')
+console.log(Stream.of(1,2,3,45,2,34).concat([64,325,4]).toArray())
