@@ -9,7 +9,8 @@
  * 
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
  */
-Stream = function(iterator){
+(function(){
+    Stream = function(iterator){
 
     /**
      * iterator
@@ -111,7 +112,7 @@ Stream = function(iterator){
         }
         return new Stream(takeWhileGen())
     }
-    
+
     /**
      * Concats any iterable lazily. Returns a new Stream
      */
@@ -489,3 +490,5 @@ Stream.from = function(a){
 }
 
 module.exports = Stream
+
+}.call(this))
