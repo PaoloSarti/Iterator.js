@@ -15,8 +15,15 @@
     /**
      * iterator
      */
-    this[Symbol.iterator] = ()=>iterator
-    
+    this[Symbol.iterator] = ()=>iterator  
+    this.iterator = ()=>iterator
+
+    /**
+     * It is an iterator itself
+     */
+    this.next = ()=>iterator.next()
+    this.nextValue = ()=>iterator.next().value
+
     /**
      * returns a new Stream that can iterate only on the first n elements (or less) of the stream
      */
@@ -112,7 +119,7 @@
         }
         return new Stream(takeWhileGen())
     }
-
+    
     /**
      * Concats any iterable lazily. Returns a new Stream
      */

@@ -1,7 +1,7 @@
 /**
  * Some usage examples
  */
-var Stream = require("./Stream.js")
+var Stream = require("../Stream.js")
 
 console.log('LINEAR CONGRUENTIAL GENERATOR')
 var seed = 0
@@ -77,3 +77,9 @@ console.log(Stream.of(3,2,1,4).reversed().toArray())
 
 console.log('CONCAT')
 console.log(Stream.of(1,2,3,45,2,34).concat([64,325,4]).toArray())
+
+console.log('NEXT')
+var s = Stream.of(4,2)
+console.log(s.nextValue())
+console.log(s.nextValue())
+console.log(s.nextValue())
