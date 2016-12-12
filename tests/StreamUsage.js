@@ -77,6 +77,7 @@ console.log(Stream.of(3,2,1,4).reversed().toArray())
 
 console.log('CONCAT')
 console.log(Stream.of(1,2,3,45,2,34).concat([64,325,4]).toArray())
+console.log(Stream.of(1,3,5412,53,2).concat(Stream.of(4,2,3,5)).toArray())
 
 console.log('NEXT')
 var s = Stream.of(4,2)
