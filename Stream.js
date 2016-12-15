@@ -135,6 +135,13 @@
         return new Stream(concatGen())
     }
 
+    /**
+     * 
+     */
+    this.applyGenerator = function(gen){
+        return new Stream(gen(this))
+    }
+
     //HEAVY METHODS
     //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!
     /**
