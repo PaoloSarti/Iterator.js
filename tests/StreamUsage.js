@@ -96,3 +96,8 @@ var smoothGen = function*(stream){
     }
 }
 console.log(Stream.of(1,5,2,4).applyGenerator(smoothGen).toArray())
+
+console.log('APPLYOPERATOR')
+var s1 = Stream.iterate(1,s=>s+2)
+var s2 = Stream.iterate(1,s=>s+3)
+console.log(s1.applyOperator((a,b)=>a+b, s2).take(5).toArray())
