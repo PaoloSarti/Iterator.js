@@ -135,6 +135,31 @@
         return new Stream(concatGen())
     }
 
+    /**
+     * Apply a custom generator on the stream.
+     * The generator should accept the stream as a parameter, and yield the elements of the new stream
+     */
+    this.applyGenerator = function(gen){
+        return new Stream(gen(this))
+    }
+
+    /**
+     * Takes an operator (a mapping function that takes two values and maps them into one value)
+     * and another stream, and applies the operator to each couple of elements of the two streams to produce another stream.
+     */
+    this.applyOperator = function(operator, stream){
+        var applyOpGen = function*(){
+            for(var i of iterator){
+                var n = stream.next() 
+                if(n.done===true)
+                    break
+
+                yield operator(i,n.value)
+            }
+        }
+        return new Stream(applyOpGen())
+    }
+
     //HEAVY METHODS
     //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!
     /**

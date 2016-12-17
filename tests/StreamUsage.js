@@ -84,3 +84,20 @@ var s = Stream.of(4,2)
 console.log(s.nextValue())
 console.log(s.nextValue())
 console.log(s.nextValue())
+
+console.log('APPLYGENERATOR')
+var smoothGen = function*(stream){
+    var prev2 = stream.nextValue()
+    var prev1 = stream.nextValue()
+    for(var i of stream){
+        yield (i+prev1+prev2)/3
+        prev2=prev1
+        prev1=i
+    }
+}
+console.log(Stream.of(1,5,2,4).applyGenerator(smoothGen).toArray())
+
+console.log('APPLYOPERATOR')
+var s1 = Stream.iterate(1,s=>s+2)
+var s2 = Stream.iterate(1,s=>s+3)
+console.log(s1.applyOperator((a,b)=>a+b, s2).take(5).toArray())
