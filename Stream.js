@@ -76,6 +76,18 @@
         return new Stream(mapGen())
     }
 
+    this.flatMap = function(f){
+        var flatMapGen = function*(){
+            for(var i of iterator){
+                var l = f(i)
+                for(var j of l){
+                    yield j
+                }
+            }
+        }
+        return new Stream(flatMapGen())
+    }
+
     /**
      * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
      *  the element will be present in the returned Stream.

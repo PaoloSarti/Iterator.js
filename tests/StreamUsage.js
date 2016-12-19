@@ -101,3 +101,7 @@ console.log('APPLYOPERATOR')
 var s1 = Stream.iterate(1,s=>s+2)
 var s2 = Stream.iterate(1,s=>s+3)
 console.log(s1.applyOperator((a,b)=>a+b, s2).take(5).toArray())
+
+console.log('FLATMAP')
+var s = Stream.tabulate(i=>i).skip(1)
+console.log(s.flatMap(s=>[s/4,s/2,3*s/4]).limit(10).toArray())
