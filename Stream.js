@@ -76,6 +76,9 @@
         return new Stream(mapGen())
     }
 
+    /**
+     * Maps the elements to a list of elements, each one yielded in the new Stream
+     */
     this.flatMap = function(f){
         var flatMapGen = function*(){
             for(var i of iterator){
