@@ -147,6 +147,27 @@
         return new Stream(concatGen())
     }
 
+    this.buffer = function(n){
+        var bufGen = function*(){
+            var j = 0
+            var a = []
+            for(var i of iterator){
+                if(j<n){
+                    a.push(i)
+                    j++
+                }
+                else{
+                    j = 1
+                    yield a
+                    a = [i]
+                }
+            }
+            if(a.length>0)
+                yield a
+        }
+        return new Stream(bufGen())
+    }
+
     /**
      * Apply a custom generator on the stream.
      * The generator should accept the stream as a parameter, and yield the elements of the new stream
