@@ -105,3 +105,7 @@ console.log(s1.applyOperator((a,b)=>a+b, s2).take(5).toArray())
 console.log('FLATMAP')
 var s = Stream.tabulate(i=>i).skip(1)
 console.log(s.flatMap(s=>[s/4,s/2,3*s/4]).limit(10).toArray())
+
+console.log('BUFFER')
+var s = Stream.range(1,21)
+console.log(s.buffer(5).map(e=>e.reduce((a,b)=>a+b)).toArray())
