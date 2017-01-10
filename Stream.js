@@ -150,6 +150,22 @@
         return new Stream(concatGen())
     }
 
+    /**
+     * Append one or more argument to the stream lazily
+     */
+    this.append = function(){
+        args = arguments
+        var appendGen = function*(){
+            for(var i of iterator){
+                yield i
+            }
+            for(var a of args){
+                yield a
+            }
+        }
+        return new Stream(appendGen())
+    }
+
     this.buffer = function(n){
         var bufGen = function*(){
             var j = 0

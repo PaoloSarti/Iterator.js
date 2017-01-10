@@ -109,3 +109,7 @@ console.log(s.flatMap(s=>[s/4,s/2,3*s/4]).limit(10).toArray())
 console.log('BUFFER')
 var s = Stream.range(1,21)
 console.log(s.buffer(5).map(e=>e.reduce((a,b)=>a+b)).toArray())
+
+console.log('APPEND')
+var s = Stream.of(2,1,4,3,2)
+console.log(s.append(65,12,32).toArray())
