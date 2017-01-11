@@ -10,7 +10,9 @@
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
  */
 (function(){
-    Stream = function(iterator){
+    'use strict'
+
+    function Stream(iterator){
 
     /**
      * iterator
@@ -151,10 +153,26 @@
     }
 
     /**
+     * Produces a Stream of couples from two Streams
+     */
+    this.zip = function(s){
+        var zipGen = function*(){
+            var next1 = iterator.next()
+            var next2 = s.next()
+            while((!next1.done)&&(!next2.done)){
+                yield [next1.value,next2.value]
+                next1 = iterator.next()
+                next2 = s.next()
+            }
+        }
+        return new Stream(zipGen())
+    }
+
+    /**
      * Append one or more argument to the stream lazily
      */
     this.append = function(){
-        args = arguments
+        var args = arguments
         var appendGen = function*(){
             for(var i of iterator){
                 yield i

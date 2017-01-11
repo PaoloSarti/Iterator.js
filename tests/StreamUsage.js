@@ -113,3 +113,8 @@ console.log(s.buffer(5).map(e=>e.reduce((a,b)=>a+b)).toArray())
 console.log('APPEND')
 var s = Stream.of(2,1,4,3,2)
 console.log(s.append(65,12,32).toArray())
+
+console.log('ZIP')
+var s1 = Stream.range(0,10)
+var s2 = Stream.range(0,10).reversed()
+console.log(s1.zip(s2).toArray())
