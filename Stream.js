@@ -252,6 +252,9 @@
                     else
                         return 0
                 })
+            } else if(typeof args[0] === 'function'){
+                var fn = args[0]
+                array.sort(fn)
             }
             for(var e of array){
                 yield e
