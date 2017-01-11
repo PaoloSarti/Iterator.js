@@ -13,7 +13,7 @@
     'use strict'
 
     function Stream(iterator){
-
+    var self = this
     /**
      * iterator
      */
@@ -460,6 +460,14 @@
         }
         return a
     }
+
+    /**
+     * Shortcut to toArray().join()
+     */
+    this.join = function(sep){
+        return self.toArray().join(sep)
+    }
+
 }
 
 /**
