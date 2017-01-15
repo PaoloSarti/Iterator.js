@@ -65,6 +65,8 @@
         return new Stream(skipGen())
     }
 
+    this.drop = this.skip
+
     /**
      * maps every element of the stream to another element applying the given function.
      * A new Stream is returned
@@ -166,6 +168,21 @@
             }
         }
         return new Stream(zipGen())
+    }
+
+    /**
+     * returns a Stream of couples in which the first element is an index (staring from 0)
+     * and the second is the element of the stream
+     */
+    this.zipWithIndex = function(){
+        var zipWithIndexGen = function*(){
+            var i=0
+            for(var e of iterator){
+                yield [i,e]
+                i++
+            }
+        }
+        return new Stream(zipWithIndexGen())
     }
 
     /**
@@ -392,12 +409,14 @@
     }
 
     /**
-     * Counts the elements of the stream
+     * Counts the elements of the stream that satisfy a predicate. If no predicate is specified, counts every element
      */
-    this.count = function(){
+    this.count = function(predicate){
         var acc = 0
+        var p = predicate === undefined ? ()=>true: predicate
         for(var i of iterator){
-            acc+=1
+            if(p(i))
+                acc+=1
         }
         return acc
     }
@@ -516,6 +535,12 @@ Stream.range = function(startInclusive, endExclusive, step){
     if(step===undefined)
         step=1
 
+    if(endExclusive === undefined)
+        endExclusive = Number.MAX_VALUE
+
+    if(startInclusive === undefined)
+        startInclusive = 0
+
     var ranGen = function*(){
         for(var i= startInclusive; i<endExclusive; i+=step){
             yield i
@@ -535,6 +560,11 @@ Stream.generate = function(f){
     }
     return new Stream(genGen())
 }
+
+/**
+ * Infinite stream of random values between 0 (inclusive) and 1 (exclusive)
+ */
+Stream.random = ()=>Stream.generate(Math.random)
 
 /**
  * infinite stream composed of only the element e
