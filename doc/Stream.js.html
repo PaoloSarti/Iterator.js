@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stream.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "";
+    var thisFile = "Stream.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>Stream.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>A Stream is an iterable object that provides some functional operators to initiate or manipulate its
+elements.</p>
+</div>
+<div class="body">
+<p>Most of its methods return a new Stream, but they don't execute any operation until explicitly requested.
+E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be iterated again.
+This is because the functions are executed lazily.</p>
+<p>Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.</p>
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+<span class="hljs-meta">    'use strict'</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Stream</span>(<span class="hljs-params">iterator</span>)</span>{
+    <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>iterator</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>[<span class="hljs-built_in">Symbol</span>.iterator] = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator  
+    <span class="hljs-keyword">this</span>.iterator = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>It is an iterator itself</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.next = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator.next()
+    <span class="hljs-keyword">this</span>.nextValue = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator.next().value
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>returns a new Stream that can iterate only on the first n elements (or less) of the stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.take = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+        <span class="hljs-keyword">var</span> takeGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;n; i++){
+                <span class="hljs-keyword">var</span> next = iterator.next()
+                <span class="hljs-keyword">if</span>(next.done === <span class="hljs-literal">false</span>)
+                    <span class="hljs-keyword">yield</span> next.value
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(takeGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>take alias</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.limit = <span class="hljs-keyword">this</span>.take
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>returns a new Stream that skips the first n elements. Notice that this method actually iterates over
+the stream immediatly to reach the new starting position.</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.skip = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+        <span class="hljs-keyword">var</span> ended = <span class="hljs-literal">false</span>
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; (i&lt;n)&amp;&amp;(!ended); i++){
+            <span class="hljs-keyword">var</span> next = iterator.next()
+            ended = next.done
+        }
+        <span class="hljs-keyword">var</span> skipGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">if</span>(!ended){
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">yield</span> j
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(skipGen())
+    }
+
+    <span class="hljs-keyword">this</span>.drop = <span class="hljs-keyword">this</span>.skip
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>maps every element of the stream to another element applying the given function.
+A new Stream is returned</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.map = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">var</span> mapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">yield</span> f(i)
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(mapGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Maps the elements to a list of elements, each one yielded in the new Stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.flatMap = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">var</span> flatMapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">var</span> l = f(i)
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j <span class="hljs-keyword">of</span> l){
+                    <span class="hljs-keyword">yield</span> j
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(flatMapGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
+the element will be present in the returned Stream.</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.filter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">var</span> filterGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'function'</span>){
+                    <span class="hljs-keyword">if</span>(f(i)===<span class="hljs-literal">true</span>){
+                        <span class="hljs-keyword">yield</span> i
+                    }
+                }
+                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'object'</span>){
+                    <span class="hljs-keyword">var</span> allMatch = <span class="hljs-literal">true</span>
+                    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> name <span class="hljs-keyword">in</span> f){
+                        <span class="hljs-keyword">if</span>(i[name] !== f[name]){
+                            allMatch = <span class="hljs-literal">false</span>
+                        }
+                    }
+                    <span class="hljs-keyword">if</span>(allMatch){
+                        <span class="hljs-keyword">yield</span> i
+                    }
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(filterGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Takes all the elements while they satisfy the f condition.
+A new Stream is returned</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.takeWhile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">var</span> takeWhileGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">if</span>(f(i)){
+                    <span class="hljs-keyword">yield</span> i
+                }
+                <span class="hljs-keyword">else</span> <span class="hljs-keyword">break</span>
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(takeWhileGen())
+    }
+    
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Concats any iterable lazily. Returns a new Stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.concat = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>)</span>{
+        <span class="hljs-keyword">var</span> concatGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">yield</span> i
+            }
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> s){
+                <span class="hljs-keyword">yield</span> i
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(concatGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Produces a Stream of couples from two Streams</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.zip = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>)</span>{
+        <span class="hljs-keyword">var</span> zipGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> next1 = iterator.next()
+            <span class="hljs-keyword">var</span> next2 = s.next()
+            <span class="hljs-keyword">while</span>((!next1.done)&amp;&amp;(!next2.done)){
+                <span class="hljs-keyword">yield</span> [next1.value,next2.value]
+                next1 = iterator.next()
+                next2 = s.next()
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(zipGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>returns a Stream of couples in which the first element is an index (staring from 0)
+and the second is the element of the stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.zipWithIndex = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> zipWithIndexGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">yield</span> [i,e]
+                i++
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(zipWithIndexGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Append one or more argument to the stream lazily</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.append = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
+        <span class="hljs-keyword">var</span> appendGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">yield</span> i
+            }
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> a <span class="hljs-keyword">of</span> args){
+                <span class="hljs-keyword">yield</span> a
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(appendGen())
+    }
+
+    <span class="hljs-keyword">this</span>.buffer = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+        <span class="hljs-keyword">var</span> bufGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>
+            <span class="hljs-keyword">var</span> a = []
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">if</span>(j&lt;n){
+                    a.push(i)
+                    j++
+                }
+                <span class="hljs-keyword">else</span>{
+                    j = <span class="hljs-number">1</span>
+                    <span class="hljs-keyword">yield</span> a
+                    a = [i]
+                }
+            }
+            <span class="hljs-keyword">if</span>(a.length&gt;<span class="hljs-number">0</span>)
+                <span class="hljs-keyword">yield</span> a
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(bufGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Apply a custom generator on the stream.
+The generator should accept the stream as a parameter, and yield the elements of the new stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.applyGenerator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">gen</span>)</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(gen(<span class="hljs-keyword">this</span>))
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Takes an operator (a mapping function that takes two values and maps them into one value)
+and another stream, and applies the operator to each couple of elements of the two streams to produce another stream.</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.applyOperator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">operator, stream</span>)</span>{
+        <span class="hljs-keyword">var</span> applyOpGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">var</span> n = stream.next() 
+                <span class="hljs-keyword">if</span>(n.done===<span class="hljs-literal">true</span>)
+                    <span class="hljs-keyword">break</span>
+
+                <span class="hljs-keyword">yield</span> operator(i,n.value)
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(applyOpGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17"></a>
+</div>
+<p>HEAVY METHODS
+THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!</p>
+<div class="dox">
+<div class="summary">
+<p>Returns a sorted version of the stream, according to natural ordering or according to a compare function, or by natural ordering of a property</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.sorted = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> thisInstance = <span class="hljs-keyword">this</span>
+        <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
+        <span class="hljs-keyword">var</span> arrayGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> array = thisInstance.toArray()
+            <span class="hljs-keyword">if</span>(args.length === <span class="hljs-number">0</span>){
+                array.sort()
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> args[<span class="hljs-number">0</span>] === <span class="hljs-string">'string'</span>){
+                <span class="hljs-keyword">var</span> name = args[<span class="hljs-number">0</span>]
+                array.sort(<span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>{
+                    <span class="hljs-keyword">if</span>(a[name]&lt;b[name])
+                        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>
+                    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(a[name]&gt;b[name])
+                        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>
+                    <span class="hljs-keyword">else</span>
+                        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+                })
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> args[<span class="hljs-number">0</span>] === <span class="hljs-string">'function'</span>){
+                <span class="hljs-keyword">var</span> fn = args[<span class="hljs-number">0</span>]
+                array.sort(fn)
+            }
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> array){
+                <span class="hljs-keyword">yield</span> e
+            }
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(arrayGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-18" id="section-18"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>alias</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.sort = <span class="hljs-keyword">this</span>.sorted
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-19" id="section-19"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>distinct</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.distinct = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> distinctGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">if</span>(!s.has(e)){
+                    s.add(e)
+                    <span class="hljs-keyword">yield</span> e
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(distinctGen())
+    }
+
+    <span class="hljs-keyword">this</span>.reversed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> thisInstance = <span class="hljs-keyword">this</span>
+        <span class="hljs-keyword">var</span> revGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> array = thisInstance.toArray().reverse()
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> array){
+                <span class="hljs-keyword">yield</span> e
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(revGen())
+    }
+
+    <span class="hljs-keyword">this</span>.reverse = <span class="hljs-keyword">this</span>.reversed
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20"></a>
+</div>
+<p>EAGER METHODS
+THEY CONSUME THE STREAM!</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-21" id="section-21"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Executes f(e) for every element e of the stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.forEach = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            f(i)
+        }
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-22" id="section-22"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>process(n,f)
+process n elements with the function f
+Like forEach, but only for the first n elements, then returns the rest of the Stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.process = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n, f</span>)</span>{
+        <span class="hljs-keyword">var</span> ended = <span class="hljs-literal">false</span>
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;n &amp;&amp; !ended; i++){
+            <span class="hljs-keyword">var</span> e = iterator.next()
+            <span class="hljs-keyword">if</span>(e.done){
+                ended = <span class="hljs-literal">true</span>
+            }
+            <span class="hljs-keyword">else</span>{
+                f(e.value)
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-23" id="section-23"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>equivalent to s.forEach(console.log)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">this</span>.forEach(<span class="hljs-built_in">console</span>.log)
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-24" id="section-24"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Finds the first occurence of an element e that satisfies f(e) and returns it</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.find = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            <span class="hljs-keyword">if</span>(f(i)===<span class="hljs-literal">true</span>){
+                <span class="hljs-keyword">return</span> i
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span>
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-25" id="section-25"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Groups the elements of the Stream using as key the result of function f applied to every element.
+Or, if you pass a String, groups by that property (in a stream of objects)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.groupBy = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">var</span> obj = {}
+        <span class="hljs-keyword">this</span>.forEach(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>{
+            <span class="hljs-keyword">var</span> key
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'function'</span>){
+                key  = f(e)
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'string'</span>){
+                key = e[f]
+            }
+
+            <span class="hljs-keyword">if</span>(obj[key]===<span class="hljs-literal">undefined</span>){
+                obj[key]=[e]
+            }
+            <span class="hljs-keyword">else</span> {
+                obj[key].push(e)
+            }
+        })
+        <span class="hljs-keyword">return</span> obj
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-26" id="section-26"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Partitions the elements of a Stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.partition = <span class="hljs-keyword">this</span>.groupBy
+    <span class="hljs-keyword">this</span>.partitionBy = <span class="hljs-keyword">this</span>.groupBy
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-27" id="section-27"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Applies f on an accumulator (initiated with start) and every element of the Stream.
+Returns a single value</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.reduce = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f,start</span>)</span>{
+        <span class="hljs-keyword">var</span> acc = start
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            acc = f(acc, i)
+        }
+        <span class="hljs-keyword">return</span> acc
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-28" id="section-28"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Counts the elements of the stream that satisfy a predicate. If no predicate is specified, counts every element</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.count = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">predicate</span>)</span>{
+        <span class="hljs-keyword">var</span> acc = <span class="hljs-number">0</span>
+        <span class="hljs-keyword">var</span> p = predicate === <span class="hljs-literal">undefined</span> ? <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span><span class="hljs-literal">true</span>: predicate
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            <span class="hljs-keyword">if</span>(p(i))
+                acc+=<span class="hljs-number">1</span>
+        }
+        <span class="hljs-keyword">return</span> acc
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-29" id="section-29"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>count alias</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.size = <span class="hljs-keyword">this</span>.count
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-30" id="section-30"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Returns the first element</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.first = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            <span class="hljs-keyword">return</span> i
+        }
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-31" id="section-31"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Returns the last element</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.last = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> l
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            l=i
+        }
+        <span class="hljs-keyword">return</span> l
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-32" id="section-32"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Sums all the elements of the stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.sum = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> acc = <span class="hljs-number">0</span>
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            acc+=i
+        }
+        <span class="hljs-keyword">return</span> acc
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-33" id="section-33"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Average</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.avg = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> array = <span class="hljs-keyword">this</span>.toArray()
+        <span class="hljs-keyword">var</span> sum = array.reduce(<span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>a+b)
+        <span class="hljs-keyword">var</span> count = array.length
+        <span class="hljs-keyword">return</span> sum / count
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-34" id="section-34"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Creates a new array with the stream elements</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.toArray = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> a = []
+        <span class="hljs-keyword">var</span> next = iterator.next()
+        <span class="hljs-keyword">while</span>(next.done === <span class="hljs-literal">false</span>){
+            a.push(next.value)
+            next = iterator.next()
+        }
+        <span class="hljs-keyword">return</span> a
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-35" id="section-35"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Shortcut to toArray().join()</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.join = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sep</span>)</span>{
+        <span class="hljs-keyword">return</span> self.toArray().join(sep)
+    }
+
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-36" id="section-36"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Stream composed of the given arguments</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.of = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
+    <span class="hljs-keyword">var</span> ofGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> a <span class="hljs-keyword">of</span> args){
+            <span class="hljs-keyword">yield</span> a
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(ofGen())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-37" id="section-37"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Infinite stream of values obtained by applying the function f from the start value</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.iterate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">start, f</span>)</span>{
+    <span class="hljs-keyword">var</span> lazyStream = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">var</span> cur = start
+        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
+            <span class="hljs-keyword">yield</span> cur
+            cur = f(cur)
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(lazyStream())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-38" id="section-38"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Infinite stream of values obtained by applying the function f to the index (starting from 0)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.tabulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+    <span class="hljs-keyword">var</span> tabGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; ;i++){
+            <span class="hljs-keyword">yield</span> f(i)
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(tabGen())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-39" id="section-39"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Limited Stream of integers, from startInclusive to endExclusive</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.range = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">startInclusive, endExclusive, step</span>)</span>{
+    <span class="hljs-keyword">if</span>(step===<span class="hljs-literal">undefined</span>)
+        step=<span class="hljs-number">1</span>
+
+    <span class="hljs-keyword">if</span>(endExclusive === <span class="hljs-literal">undefined</span>)
+        endExclusive = <span class="hljs-built_in">Number</span>.MAX_VALUE
+
+    <span class="hljs-keyword">if</span>(startInclusive === <span class="hljs-literal">undefined</span>)
+        startInclusive = <span class="hljs-number">0</span>
+
+    <span class="hljs-keyword">var</span> ranGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i= startInclusive; i&lt;endExclusive; i+=step){
+            <span class="hljs-keyword">yield</span> i
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(ranGen())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-40" id="section-40"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>infinite stream composed of the results of the function f</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.generate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+    <span class="hljs-keyword">var</span> genGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
+            <span class="hljs-keyword">yield</span> f()
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(genGen())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-41" id="section-41"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Infinite stream of random values between 0 (inclusive) and 1 (exclusive)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.random = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>Stream.generate(<span class="hljs-built_in">Math</span>.random)
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-42" id="section-42"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>infinite stream composed of only the element e</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.fill = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
+    <span class="hljs-keyword">var</span> fillGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
+            <span class="hljs-keyword">yield</span> e
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(fillGen())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-43" id="section-43"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>An empty stream</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.empty = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">var</span> emptyGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(emptyGen())
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-44" id="section-44"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Creates a stream from an array, object, Set, Map.
+With a Map, it creates a stream of {key:<key>, value:<value>} objects
+With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Stream.from = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a</span>)</span>{
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-45" id="section-45"></a>
+</div>
+<p>if null</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span>(a === <span class="hljs-literal">null</span> || a === <span class="hljs-literal">undefined</span>)
+        <span class="hljs-keyword">return</span> Stream.empty()
+    
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-46" id="section-46"></a>
+</div>
+<p>if array or Set</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span>(a.constructor === <span class="hljs-built_in">Array</span> || a.constructor === <span class="hljs-built_in">Set</span> || <span class="hljs-keyword">typeof</span> a === <span class="hljs-string">'string'</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(a[<span class="hljs-built_in">Symbol</span>.iterator]())
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-47" id="section-47"></a>
+</div>
+<p>if Map</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span>(a.constructor === <span class="hljs-built_in">Map</span>){
+        <span class="hljs-keyword">var</span> mapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> a){
+                <span class="hljs-keyword">yield</span> {
+                    <span class="hljs-attr">key</span>: e[<span class="hljs-number">0</span>],
+                    <span class="hljs-attr">value</span>: e[<span class="hljs-number">1</span>]
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(mapGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-48" id="section-48"></a>
+</div>
+<p>if object</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> a === <span class="hljs-string">'object'</span>){
+        <span class="hljs-keyword">var</span> objGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">in</span> a){
+                <span class="hljs-keyword">yield</span> {
+                    <span class="hljs-attr">name</span>:e,
+                    <span class="hljs-attr">value</span>:a[e]
+                }
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(objGen())
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-49" id="section-49"></a>
+</div>
+<p>if something else, call Stream.of</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">return</span> Stream.of(a)
+}
+
+<span class="hljs-built_in">module</span>.exports = Stream
+
+}.call(<span class="hljs-keyword">this</span>))
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>
