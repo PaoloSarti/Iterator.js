@@ -8,6 +8,9 @@
  * This is because the functions are executed lazily.
  * 
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
+ * 
+ * Use this library from this link in development: https://rawgit.com/PaoloSarti/Stream.js/master/Stream.js
+ * and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/Stream.js
  */
 "use strict";
 
