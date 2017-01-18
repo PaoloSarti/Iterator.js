@@ -244,6 +244,20 @@
     }
 
     /**
+     * Returns a Stream that is made of partial sums of every previous element of the Stream
+     */
+    this.cumulate = function(){
+        var cumulateGen = function*(){
+            var a = 0
+            for(var i of iterator){
+                a = a + i
+                yield a
+            }
+        }
+        return new Stream(cumulateGen())
+    }
+
+    /**
      * Apply a custom generator on the stream.
      * The generator should accept the stream as a parameter, and yield the elements of the new stream
      */
