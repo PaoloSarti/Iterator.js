@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>LogisticMap.js</title>
+  <title>collatz.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="../doc-style.css" />
   <script src="../doc-filelist.js"></script>
   <script>
     var relativeDir = "../";
-    var thisFile = "tests\\LogisticMap.js";
+    var thisFile = "tests\\collatz.js";
     var defaultSidebar = true;
   </script>
   <script src="../doc-script.js"></script>
@@ -32,7 +32,7 @@
     
       <tr>
         <td class="docs">
-          <h1>LogisticMap.js</h1>
+          <h1>collatz.js</h1>
         </td>
         <td class="code highlight"></td>
       </tr>
@@ -48,14 +48,16 @@
         <td class="code highlight">
           <pre class="javascript"><span class="hljs-keyword">const</span> Stream = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Stream.js"</span>)
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logisticMap</span>(<span class="hljs-params">x0,r</span>)</span>{
-    <span class="hljs-keyword">return</span> Stream.iterate(x0, e=&gt;r*e*(<span class="hljs-number">1</span>-x0))
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hotpo</span>(<span class="hljs-params">n</span>)</span>{
+    <span class="hljs-keyword">return</span> n%<span class="hljs-number">2</span>==<span class="hljs-number">0</span>?n/<span class="hljs-number">2</span>:<span class="hljs-number">3</span>*n+<span class="hljs-number">1</span>
 }
 
-<span class="hljs-keyword">const</span> l = logisticMap(<span class="hljs-number">0.9</span>,<span class="hljs-number">0.9</span>)
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">collatzStream</span>(<span class="hljs-params">n</span>)</span>{
+    <span class="hljs-keyword">return</span> Stream.iterate(n,hotpo).takeWhile(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e&gt;<span class="hljs-number">1</span>).append(<span class="hljs-number">1</span>)
+}
 
-<span class="hljs-built_in">console</span>.log(l.takeWhile(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e&gt;<span class="hljs-number">0.00001</span>).toArray())
 
+<span class="hljs-built_in">console</span>.log(collatzStream(<span class="hljs-number">14</span>).toArray())
 </pre>
         </td>
       </tr>

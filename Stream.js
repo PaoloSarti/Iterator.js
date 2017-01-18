@@ -4,7 +4,7 @@
  * elements.
  *
  * Most of its methods return a new Stream, but they don't execute any operation until explicitly requested.
- * E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be iterated again.
+ * E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be safely iterated again.
  * This is because the functions are executed lazily.
  * 
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
@@ -65,6 +65,9 @@
         return new Stream(skipGen())
     }
 
+    /**
+     * Skip alias
+     */
     this.drop = this.skip
 
     /**
@@ -186,6 +189,14 @@
     }
 
     /**
+     * Filter by providing a predicate on the index (starting from 0 from the current item)
+     */
+    this.filterByIndex = function(f){
+        return self.zipWithIndex().filter(e=>f(e[0])).map(e=>e[1])
+    }
+
+
+    /**
      * Append one or more argument to the stream lazily
      */
     this.append = function(){
@@ -201,6 +212,9 @@
         return new Stream(appendGen())
     }
 
+    /**
+     * Generates a new Stream, in which every element is an array of n elements of the original Stream
+     */
     this.buffer = function(n){
         var bufGen = function*(){
             var j = 0
@@ -468,16 +482,23 @@
     }
 
     /**
-     * Creates a new array with the stream elements
+     * Creates a new array with the stream elements.
+     * If you provide a parameter,
+     * only n elements (or less) will be consumed and pushed into the array
      */
-    this.toArray = function(){
-        var a = []
-        var next = iterator.next()
-        while(next.done === false){
-            a.push(next.value)
-            next = iterator.next()
+    this.toArray = function(n){
+        if(n===undefined){
+            var a = []
+            var next = iterator.next()
+            while(next.done === false){
+                a.push(next.value)
+                next = iterator.next()
+            }
+            return a
         }
-        return a
+        else {
+            return self.take(n).toArray()
+        }
     }
 
     /**
