@@ -9,8 +9,12 @@
  * 
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
  */
-var Stream = function(){
-    'use strict'
+"use strict";
+
+(function(){
+    var root = this
+    var previous_Stream = root.Stream
+
 
     function Stream(iterator){
     var self = this
@@ -653,6 +657,19 @@ Stream.from = function(a){
     return Stream.of(a)
 }
 
-module.exports = Stream
+Stream.noConflict = function() {
+  root.Stream = previous_Stream
+  return Stream
+}
 
-}.call(this)
+if( typeof exports !== 'undefined' ) {
+    if( typeof module !== 'undefined' && module.exports ) {
+      exports = module.exports = Stream
+    }
+    exports.Stream = Stream
+} 
+else {
+    root.Stream = Stream
+}
+
+}.call(this))
