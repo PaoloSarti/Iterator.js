@@ -9,7 +9,7 @@
  * 
  * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
  */
-(function(){
+var Stream = function(){
     'use strict'
 
     function Stream(iterator){
@@ -655,4 +655,4 @@ Stream.from = function(a){
 
 module.exports = Stream
 
-}.call(this))
+}.call(this)
