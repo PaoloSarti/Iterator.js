@@ -981,7 +981,13 @@ Returns a single value</p>
         </td>
         <td class="code highlight">
           <pre class="javascript">    <span class="hljs-keyword">this</span>.reduce = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f,start</span>)</span>{
-        <span class="hljs-keyword">var</span> acc = start
+        <span class="hljs-keyword">var</span> acc
+        <span class="hljs-keyword">if</span>(start===<span class="hljs-literal">undefined</span>){
+            acc = iterator.next().value
+        }
+        <span class="hljs-keyword">else</span> {
+            acc = start
+        }
         <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
             acc = f(acc, i)
         }

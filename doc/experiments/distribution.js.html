@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>distribution.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "experiments\\distribution.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>distribution.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">const</span> Stream = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../Stream.js'</span>)
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>takes an object that maps his keys to probabilities
+and returns a function that returns one of the keys
+with that discrete distribution</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">distribution</span>(<span class="hljs-params">o</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> p = <span class="hljs-number">0</span>
+        <span class="hljs-keyword">var</span> r = <span class="hljs-built_in">Math</span>.random()
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> o){
+            p+=o[key]
+            <span class="hljs-keyword">if</span>(r&lt;p){
+                <span class="hljs-keyword">return</span> key
+            }
+        }
+    }
+}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Takes an objects that maps keys to counts and returns a new object that maps keys to frequencies.
+The sum of the values will be one</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">normalize</span>(<span class="hljs-params">obj</span>)</span>{
+    <span class="hljs-keyword">var</span> normalized = {}
+    <span class="hljs-keyword">var</span> sum = Stream.from(obj).map(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e.value).sum()
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> obj){
+        normalized[key] = obj[key]/sum
+    }
+    <span class="hljs-keyword">return</span> normalized
+}
+
+<span class="hljs-keyword">var</span> d = {<span class="hljs-attr">A</span>:<span class="hljs-number">0.5</span>,<span class="hljs-attr">B</span>:<span class="hljs-number">0.25</span>,<span class="hljs-attr">C</span>:<span class="hljs-number">0.125</span>,<span class="hljs-attr">D</span>:<span class="hljs-number">0.125</span>}
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Discrete distribution: '</span>+<span class="hljs-built_in">JSON</span>.stringify(d))
+
+<span class="hljs-keyword">var</span> s = Stream.generate(distribution(d))
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Example stream: '</span>+s.toArray(<span class="hljs-number">10</span>))
+<span class="hljs-keyword">var</span> n = <span class="hljs-number">1000000</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'n: '</span>+n)
+<span class="hljs-keyword">var</span> counts = s.take(n).reduce(<span class="hljs-function">(<span class="hljs-params">o,e</span>)=&gt;</span>{
+    <span class="hljs-keyword">var</span> inc = {}
+    inc[e]=o[e]+<span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assign(o,inc)
+},{<span class="hljs-attr">A</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">B</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">C</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">D</span>:<span class="hljs-number">0</span>})
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Counts: '</span>+<span class="hljs-built_in">JSON</span>.stringify(counts))
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Frequencies: '</span>+<span class="hljs-built_in">JSON</span>.stringify(normalize(counts)))
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>

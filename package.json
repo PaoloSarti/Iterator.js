@@ -4,7 +4,7 @@
   "description": "Functional operators wrapper to iterators, implemented through javascript's generators",
   "main": "Stream.js",
   "scripts": {
-    "test": "tests/StreamUsage.js"
+    "test": "experiments/StreamUsage.js"
   },
   "repository": {
     "type": "git",

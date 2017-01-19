@@ -441,7 +441,13 @@
      * Returns a single value
      */
     this.reduce = function(f,start){
-        var acc = start
+        var acc
+        if(start===undefined){
+            acc = iterator.next().value
+        }
+        else {
+            acc = start
+        }
         for(var i of iterator){
             acc = f(acc, i)
         }
