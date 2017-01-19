@@ -36,7 +36,7 @@ console.log('Discrete distribution: '+JSON.stringify(d))
 
 var s = Stream.generate(distribution(d))
 
-console.log('Example stream: '+s.toArray(10))
+console.log('Example stream: '+s.toArray(20))
 var n = 1000000
 console.log('n: '+n)
 var counts = s.take(n).reduce((o,e)=>{
@@ -47,3 +47,21 @@ var counts = s.take(n).reduce((o,e)=>{
 
 console.log('Counts: '+JSON.stringify(counts))
 console.log('Frequencies: '+JSON.stringify(normalize(counts)))
+
+/**
+ * A function that takes an encoding object (key=>value),
+ * and returns a function that maps a key to that value
+ */
+function encodeFn(enc){
+    return function(e){
+        return enc[e]
+    }
+}
+
+var naiveEncoding = {A:[0,0],B:[0,1],C:[1,0],D:[1,1]}
+console.log('naiveEncoding: '+JSON.stringify(naiveEncoding))
+console.log('Size of encoded stream from '+n+' symbols: '+s.map(encodeFn(naiveEncoding)).take(n).flatten().size())
+
+var smartEncoding = {A:[0],B:[1,0],C:[1,1,0],D:[1,1,1]}
+console.log('smartEncoding: '+JSON.stringify(smartEncoding))
+console.log('Size of encoded stream from '+n+' symbols: '+s.map(encodeFn(smartEncoding)).take(n).flatten().size())
