@@ -46,7 +46,22 @@ var counts = s.take(n).reduce((o,e)=>{
 },{A:0,B:0,C:0,D:0})
 
 console.log('Counts: '+JSON.stringify(counts))
-console.log('Frequencies: '+JSON.stringify(normalize(counts)))
+var normalized = normalize(counts)
+console.log('Frequencies: '+JSON.stringify(normalized))
+
+/**
+ * Calculates the entropy of a distribution object (sum of values = 1)
+ */
+function entropy(obj){
+    return -Stream
+                .from(obj)
+                .map(o=>o.value)
+                .map(p=>p*Math.log2(p))
+                .sum()
+}
+
+console.log('Theoretiacal entropy: '+entropy(d))
+console.log('Tested entropy: '+entropy(normalized))
 
 /**
  * A function that takes an encoding object (key=>value),
