@@ -106,6 +106,11 @@
     }
 
     /**
+     * Flattens a stream of iterables into a Stream of the elements of each iterable
+     */
+    this.flatten = ()=>this.flatMap(i=>i)
+
+    /**
      * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
      *  the element will be present in the returned Stream.
      */
