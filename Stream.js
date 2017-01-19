@@ -482,6 +482,28 @@
     }
 
     /**
+     * Minimum numeric value of the stream (if empty = Number.MAX_VALUE)
+     */
+    this.min = function(){
+        var m = Number.MAX_VALUE
+        for(var i of iterator){
+            m = m>i ? i : m
+        }
+        return m
+    }
+
+    /**
+     * Maximum numeric value of the Stream (if empty = Number.MAX_VALUE)
+     */
+    this.max = function(){
+        var m = Number.MIN_VALUE
+        for(var i of iterator){
+            m = m<i ? i : m
+        }
+        return m
+    }
+
+    /**
      * Sums all the elements of the stream
      */
     this.sum = function(){

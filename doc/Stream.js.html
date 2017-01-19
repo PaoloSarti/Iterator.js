@@ -47,14 +47,14 @@
 <div class="summary">
 <p>A Stream is an iterable object that provides some functional operators to initiate or manipulate its
 elements.</p>
-</div>
-<div class="body">
 <p>Most of its methods return a new Stream, but they don't execute any operation until explicitly requested.
 E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be safely iterated again.
 This is because the functions are executed lazily.</p>
 <p>Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.</p>
 <p>Use this library from this link in development: https://rawgit.com/PaoloSarti/Stream.js/master/Stream.js
 and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/Stream.js</p>
+</div>
+<div class="body">
 </div>
 </div>
 
@@ -1080,6 +1080,60 @@ Returns a single value</p>
 </div>
 <div class="dox">
 <div class="summary">
+<p>Minimum numeric value of the stream (if empty = Number.MAX_VALUE)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.min = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> m = <span class="hljs-built_in">Number</span>.MAX_VALUE
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            m = m&gt;i ? i : m
+        }
+        <span class="hljs-keyword">return</span> m
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-37" id="section-37"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Maximum numeric value of the Stream (if empty = Number.MAX_VALUE)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.max = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> m = <span class="hljs-built_in">Number</span>.MIN_VALUE
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+            m = m&lt;i ? i : m
+        }
+        <span class="hljs-keyword">return</span> m
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-38" id="section-38"></a>
+</div>
+<div class="dox">
+<div class="summary">
 <p>Sums all the elements of the stream</p>
 </div>
 <div class="body">
@@ -1103,7 +1157,7 @@ Returns a single value</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-37" id="section-37"></a>
+  <a class="pilcrow" href="#section-39" id="section-39"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1129,7 +1183,7 @@ Returns a single value</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-38" id="section-38"></a>
+  <a class="pilcrow" href="#section-40" id="section-40"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1165,7 +1219,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-39" id="section-39"></a>
+  <a class="pilcrow" href="#section-41" id="section-41"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1190,7 +1244,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-40" id="section-40"></a>
+  <a class="pilcrow" href="#section-42" id="section-42"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1219,7 +1273,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-41" id="section-41"></a>
+  <a class="pilcrow" href="#section-43" id="section-43"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1249,7 +1303,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-42" id="section-42"></a>
+  <a class="pilcrow" href="#section-44" id="section-44"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1277,7 +1331,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-43" id="section-43"></a>
+  <a class="pilcrow" href="#section-45" id="section-45"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1314,7 +1368,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-44" id="section-44"></a>
+  <a class="pilcrow" href="#section-46" id="section-46"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1342,7 +1396,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-45" id="section-45"></a>
+  <a class="pilcrow" href="#section-47" id="section-47"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1363,7 +1417,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-46" id="section-46"></a>
+  <a class="pilcrow" href="#section-48" id="section-48"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1391,7 +1445,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-47" id="section-47"></a>
+  <a class="pilcrow" href="#section-49" id="section-49"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1416,7 +1470,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-48" id="section-48"></a>
+  <a class="pilcrow" href="#section-50" id="section-50"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1438,7 +1492,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-49" id="section-49"></a>
+  <a class="pilcrow" href="#section-51" id="section-51"></a>
 </div>
 <p>if null</p>
 
@@ -1454,7 +1508,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-50" id="section-50"></a>
+  <a class="pilcrow" href="#section-52" id="section-52"></a>
 </div>
 <p>if array or Set</p>
 
@@ -1470,7 +1524,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-51" id="section-51"></a>
+  <a class="pilcrow" href="#section-53" id="section-53"></a>
 </div>
 <p>if Map</p>
 
@@ -1495,7 +1549,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-52" id="section-52"></a>
+  <a class="pilcrow" href="#section-54" id="section-54"></a>
 </div>
 <p>if object</p>
 
@@ -1520,7 +1574,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-53" id="section-53"></a>
+  <a class="pilcrow" href="#section-55" id="section-55"></a>
 </div>
 <p>if something else, call Stream.of</p>
 
