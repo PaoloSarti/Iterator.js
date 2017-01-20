@@ -98,7 +98,7 @@
 
     /**
      * Maps the elements to a list of elements, each one yielded in the new Stream.
-     * If a string is provided, then it will map the object property with that name.
+     * If a string is provided, then it will flatmap the object property with that name (it has to be an iterable tough).
      */
     this.flatMap = function(f){
         var flatMapGen = function*(){

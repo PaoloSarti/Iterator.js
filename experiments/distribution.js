@@ -47,21 +47,44 @@ var counts = s.take(n).reduce((o,e)=>{
 
 console.log('Counts: '+JSON.stringify(counts))
 var normalized = normalize(counts)
-console.log('Frequencies: '+JSON.stringify(normalized))
+console.log('Frequencies: '+JSON.stringify(normalized)+'\n')
 
 /**
  * Calculates the entropy of a distribution object (sum of values = 1)
  */
 function entropy(obj){
-    return -Stream
-                .from(obj)
+    return -Stream.from(obj)
                 .map(o=>o.value)
                 .map(p=>p*Math.log2(p))
                 .sum()
 }
 
+/**
+ * Calculates the gini index of a distribution object (sum of values = 1)
+ */
+function giniIndex(obj){
+    return 1-Stream.from(obj)
+                .map(e=>e.value*e.value)
+                .sum()
+}
+
+/**
+ * Calculates the misclassification error of a distribution object (sum of values = 1)
+ */
+function misclassificationError(obj){
+    return 1-Stream.from(obj)
+                    .map(e=>e.value)
+                    .max()
+}
+
 console.log('Theoretiacal entropy: '+entropy(d))
-console.log('Tested entropy: '+entropy(normalized))
+console.log('Tested entropy: '+entropy(normalized)+'\n')
+
+console.log('Theoretiacal Gini index: '+giniIndex(d))
+console.log('Tested Gini index: '+giniIndex(normalized)+'\n')
+
+console.log('Theoretiacal misclassification error: '+misclassificationError(d))
+console.log('Tested misclassification error: '+misclassificationError(normalized)+'\n')
 
 /**
  * A function that takes an encoding object (key=>value),
@@ -72,6 +95,7 @@ function encodeFn(enc){
         return enc[e]
     }
 }
+
 
 var naiveEncoding = {A:[0,0],B:[0,1],C:[1,0],D:[1,1]}
 console.log('naiveEncoding: '+JSON.stringify(naiveEncoding))
