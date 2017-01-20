@@ -720,6 +720,17 @@ Stream.from = function(a){
     return Stream.of(a)
 }
 
+/**
+ * Like Stream.from, but, in case of objects or Maps, returns a stream of values instead of a stream of pairs
+ */
+Stream.values = function(a){
+    var s = Stream.from(a)
+    if(a.constructor === Map || (typeof a !== 'string' && a.constructor !== Set && a.constructor !== Array)){
+        return s.map(e=>e.value)
+    }
+    return s
+}
+
 Stream.noConflict = function() {
   root.Stream = previous_Stream
   return Stream

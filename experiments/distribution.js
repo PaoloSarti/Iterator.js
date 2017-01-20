@@ -53,28 +53,25 @@ console.log('Frequencies: '+JSON.stringify(normalized)+'\n')
  * Calculates the entropy of a distribution object (sum of values = 1)
  */
 function entropy(obj){
-    return -Stream.from(obj)
-                .map(o=>o.value)
-                .map(p=>p*Math.log2(p))
-                .sum()
+    return -Stream.values(obj)
+                    .map(p=>p*Math.log2(p))
+                    .sum()
 }
 
 /**
  * Calculates the gini index of a distribution object (sum of values = 1)
  */
 function giniIndex(obj){
-    return 1-Stream.from(obj)
-                .map(e=>e.value*e.value)
-                .sum()
+    return 1-Stream.values(obj)
+                    .map(p=>p*p)
+                    .sum()
 }
 
 /**
  * Calculates the misclassification error of a distribution object (sum of values = 1)
  */
 function misclassificationError(obj){
-    return 1-Stream.from(obj)
-                    .map(e=>e.value)
-                    .max()
+    return 1-Stream.values(obj).max()
 }
 
 console.log('Theoretiacal entropy: '+entropy(d))
