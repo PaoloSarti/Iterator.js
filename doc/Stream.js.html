@@ -47,14 +47,14 @@
 <div class="summary">
 <p>A Stream is an iterable object that provides some functional operators to initiate or manipulate its
 elements.</p>
+</div>
+<div class="body">
 <p>Most of its methods return a new Stream, but they don't execute any operation until explicitly requested.
 E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be safely iterated again.
 This is because the functions are executed lazily.</p>
 <p>Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.</p>
 <p>Use this library from this link in development: https://rawgit.com/PaoloSarti/Stream.js/master/Stream.js
 and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/Stream.js</p>
-</div>
-<div class="body">
 </div>
 </div>
 
@@ -233,7 +233,8 @@ the stream immediatly to reach the new starting position.</p>
 <div class="dox">
 <div class="summary">
 <p>maps every element of the stream to another element applying the given function.
-A new Stream is returned</p>
+If a string is provided, then it will map the object property with that name
+A new Stream is returned.</p>
 </div>
 <div class="body">
 </div>
@@ -244,7 +245,12 @@ A new Stream is returned</p>
           <pre class="javascript">    <span class="hljs-keyword">this</span>.map = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
         <span class="hljs-keyword">var</span> mapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                <span class="hljs-keyword">yield</span> f(i)
+                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'string'</span>){
+                    <span class="hljs-keyword">yield</span> i[f]
+                }
+                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'function'</span>){
+                    <span class="hljs-keyword">yield</span> f(i)
+                }
             }
         }
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(mapGen())
@@ -261,7 +267,8 @@ A new Stream is returned</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Maps the elements to a list of elements, each one yielded in the new Stream</p>
+<p>Maps the elements to a list of elements, each one yielded in the new Stream.
+If a string is provided, then it will map the object property with that name.</p>
 </div>
 <div class="body">
 </div>
@@ -272,7 +279,13 @@ A new Stream is returned</p>
           <pre class="javascript">    <span class="hljs-keyword">this</span>.flatMap = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
         <span class="hljs-keyword">var</span> flatMapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                <span class="hljs-keyword">var</span> l = f(i)
+                <span class="hljs-keyword">var</span> l
+                <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'string'</span>){
+                    l = i[f]
+                }
+                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'function'</span>){
+                    l=f(i)
+                }
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j <span class="hljs-keyword">of</span> l){
                     <span class="hljs-keyword">yield</span> j
                 }

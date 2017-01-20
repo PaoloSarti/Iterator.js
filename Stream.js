@@ -79,24 +79,37 @@
 
     /**
      * maps every element of the stream to another element applying the given function.
-     * A new Stream is returned
+     * If a string is provided, then it will map the object property with that name
+     * A new Stream is returned.
      */
     this.map = function(f){
         var mapGen = function*(){
             for(var i of iterator){
-                yield f(i)
+                if(typeof f === 'string'){
+                    yield i[f]
+                }
+                else if(typeof f === 'function'){
+                    yield f(i)
+                }
             }
         }
         return new Stream(mapGen())
     }
 
     /**
-     * Maps the elements to a list of elements, each one yielded in the new Stream
+     * Maps the elements to a list of elements, each one yielded in the new Stream.
+     * If a string is provided, then it will map the object property with that name.
      */
     this.flatMap = function(f){
         var flatMapGen = function*(){
             for(var i of iterator){
-                var l = f(i)
+                var l
+                if(typeof f === 'string'){
+                    l = i[f]
+                }
+                else if(typeof f === 'function'){
+                    l=f(i)
+                }
                 for(var j of l){
                     yield j
                 }
