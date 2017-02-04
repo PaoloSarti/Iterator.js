@@ -46,18 +46,18 @@
 
         </td>
         <td class="code highlight">
-          <pre class="javascript"><span class="hljs-keyword">const</span> Stream = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Stream.js"</span>)
+          <pre class="javascript"><span class="hljs-keyword">const</span> Iterator = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Iterator.js"</span>)
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hotpo</span>(<span class="hljs-params">n</span>)</span>{
     <span class="hljs-keyword">return</span> n%<span class="hljs-number">2</span>==<span class="hljs-number">0</span>?n/<span class="hljs-number">2</span>:<span class="hljs-number">3</span>*n+<span class="hljs-number">1</span>
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">collatzStream</span>(<span class="hljs-params">n</span>)</span>{
-    <span class="hljs-keyword">return</span> Stream.iterate(n,hotpo).takeWhile(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e&gt;<span class="hljs-number">1</span>).append(<span class="hljs-number">1</span>)
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">collatzIterator</span>(<span class="hljs-params">n</span>)</span>{
+    <span class="hljs-keyword">return</span> Iterator.iterate(n,hotpo).takeWhile(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e&gt;<span class="hljs-number">1</span>).append(<span class="hljs-number">1</span>)
 }
 
 
-<span class="hljs-built_in">console</span>.log(collatzStream(<span class="hljs-number">14</span>).toArray())
+<span class="hljs-built_in">console</span>.log(collatzIterator(<span class="hljs-number">14</span>).toArray())
 </pre>
         </td>
       </tr>

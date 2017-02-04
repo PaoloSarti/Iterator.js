@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>StreamUsage.js</title>
+  <title>IteratorUsage.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="../doc-style.css" />
   <script src="../doc-filelist.js"></script>
   <script>
     var relativeDir = "../";
-    var thisFile = "experiments/StreamUsage.js";
+    var thisFile = "experiments/IteratorUsage.js";
     var defaultSidebar = true;
   </script>
   <script src="../doc-script.js"></script>
@@ -32,7 +32,7 @@
     
       <tr>
         <td class="docs">
-          <h1>StreamUsage.js</h1>
+          <h1>IteratorUsage.js</h1>
         </td>
         <td class="code highlight"></td>
       </tr>
@@ -53,14 +53,14 @@
 
         </td>
         <td class="code highlight">
-          <pre class="javascript"><span class="hljs-keyword">var</span> Stream = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Stream.js"</span>)
+          <pre class="javascript"><span class="hljs-keyword">var</span> Iterator = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Iterator.js"</span>)
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'LINEAR CONGRUENTIAL GENERATOR'</span>)
 <span class="hljs-keyword">var</span> seed = <span class="hljs-number">0</span>
 <span class="hljs-keyword">var</span> a = <span class="hljs-number">113</span>
 <span class="hljs-keyword">var</span> b = <span class="hljs-number">83</span>
 <span class="hljs-keyword">var</span> m = <span class="hljs-number">104723</span>
-<span class="hljs-keyword">var</span> casual1 = Stream.iterate(seed, i=&gt;(a*i+b)%m)
+<span class="hljs-keyword">var</span> casual1 = Iterator.iterate(seed, i=&gt;(a*i+b)%m)
 <span class="hljs-built_in">console</span>.log(casual1.limit(<span class="hljs-number">10</span>).toArray())
 
 </pre>
@@ -72,12 +72,12 @@
           <div class="pilwrap">
   <a class="pilcrow" href="#section-2" id="section-2"></a>
 </div>
-<p>Infinite stream of 4 values</p>
+<p>Infinite Iterator of 4 values</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'FOUR VALUES CIRCULAR STREAM'</span>)
-<span class="hljs-keyword">var</span> circular = Stream.iterate(<span class="hljs-number">0</span>,e=&gt;(e+<span class="hljs-number">1</span>)%<span class="hljs-number">4</span>)
+          <pre class="javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'FOUR VALUES CIRCULAR Iterator'</span>)
+<span class="hljs-keyword">var</span> circular = Iterator.iterate(<span class="hljs-number">0</span>,e=&gt;(e+<span class="hljs-number">1</span>)%<span class="hljs-number">4</span>)
 </pre>
         </td>
       </tr>
@@ -87,7 +87,7 @@
           <div class="pilwrap">
   <a class="pilcrow" href="#section-3" id="section-3"></a>
 </div>
-<p>A Stream can be iterated with a normal for..of</p>
+<p>A Iterator can be iterated with a normal for..of</p>
 
         </td>
         <td class="code highlight">
@@ -95,35 +95,35 @@
     <span class="hljs-built_in">console</span>.log(e)
 }
 
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'STREAM OF ARGUMENTS'</span>)
-Stream.of(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>).log()
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Iterator OF ARGUMENTS'</span>)
+Iterator.of(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>).log()
 
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'OBJECT STREAM'</span>)
-Stream.from({<span class="hljs-attr">a</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">b</span>:<span class="hljs-string">'hola'</span>}).log()
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'OBJECT Iterator'</span>)
+Iterator.from({<span class="hljs-attr">a</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">b</span>:<span class="hljs-string">'hola'</span>}).log()
 
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'SET STREAM'</span>)
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'SET Iterator'</span>)
 <span class="hljs-keyword">var</span> set = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()
 set.add(<span class="hljs-number">23</span>)
 set.add(<span class="hljs-string">'hi'</span>)
 <span class="hljs-built_in">console</span>.log(set)
-Stream.from(set).log()
+Iterator.from(set).log()
 
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'MAP STREAM'</span>)
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'MAP Iterator'</span>)
 <span class="hljs-keyword">var</span> map = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>()
 map.set(<span class="hljs-string">'key1'</span>, <span class="hljs-number">12</span>)
 map.set(<span class="hljs-string">'key2'</span>,<span class="hljs-string">"hi"</span>)
 <span class="hljs-built_in">console</span>.log(map)
-<span class="hljs-built_in">console</span>.log(Stream.from(map).toArray())
+<span class="hljs-built_in">console</span>.log(Iterator.from(map).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GROUP BY'</span>)
-<span class="hljs-keyword">var</span> s = Stream.from(<span class="hljs-string">'hi how are you?'</span>.split(<span class="hljs-string">' '</span>))
+<span class="hljs-keyword">var</span> s = Iterator.from(<span class="hljs-string">'hi how are you?'</span>.split(<span class="hljs-string">' '</span>))
 <span class="hljs-built_in">console</span>.log(s.groupBy(<span class="hljs-function"><span class="hljs-params">s</span>=&gt;</span>s[<span class="hljs-number">0</span>]))
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'PARTITION'</span>)
-<span class="hljs-keyword">var</span> s = Stream.from(<span class="hljs-string">'hi how are you?'</span>.split(<span class="hljs-string">' '</span>))
+<span class="hljs-keyword">var</span> s = Iterator.from(<span class="hljs-string">'hi how are you?'</span>.split(<span class="hljs-string">' '</span>))
 <span class="hljs-built_in">console</span>.log(s.partition(<span class="hljs-function"><span class="hljs-params">s</span>=&gt;</span>s.length===<span class="hljs-number">3</span>))
 
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'STREAM FROM ITERATOR (CREATED WITH A GENERATOR)'</span>)
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Iterator FROM ITERATOR (CREATED WITH A GENERATOR)'</span>)
 <span class="hljs-keyword">var</span> fibs = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">var</span> a = <span class="hljs-number">0</span>
     <span class="hljs-keyword">var</span> b = <span class="hljs-number">1</span>
@@ -145,11 +145,11 @@ map.set(<span class="hljs-string">'key2'</span>,<span class="hljs-string">"hi"</
           <div class="pilwrap">
   <a class="pilcrow" href="#section-4" id="section-4"></a>
 </div>
-<p>a Stream is really just a wrapper of iterators, so the constructor only takes iterators</p>
+<p>a Iterator is really just a wrapper of iterators, so the constructor only takes iterators</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript"><span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> Stream(fibs())
+          <pre class="javascript"><span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> Iterator(fibs())
 </pre>
         </td>
       </tr>
@@ -166,7 +166,7 @@ map.set(<span class="hljs-string">'key2'</span>,<span class="hljs-string">"hi"</
           <pre class="javascript"><span class="hljs-built_in">console</span>.log(f.filter(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>i%<span class="hljs-number">2</span>==<span class="hljs-number">0</span>).limit(<span class="hljs-number">10</span>).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'SORTED'</span>)
-<span class="hljs-keyword">var</span> s = Stream.generate(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span><span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random()*<span class="hljs-number">100</span>))
+<span class="hljs-keyword">var</span> s = Iterator.generate(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span><span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random()*<span class="hljs-number">100</span>))
 </pre>
         </td>
       </tr>
@@ -182,53 +182,53 @@ map.set(<span class="hljs-string">'key2'</span>,<span class="hljs-string">"hi"</
         <td class="code highlight">
           <pre class="javascript">
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'SORTED BY PROPERTY'</span>)
-<span class="hljs-built_in">console</span>.log(Stream.tabulate(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>{ <span class="hljs-keyword">return</span> {<span class="hljs-attr">a</span>:i,<span class="hljs-attr">b</span>:<span class="hljs-number">10</span>-i};}).take(<span class="hljs-number">10</span>).sorted(<span class="hljs-string">'b'</span>).toArray())
+<span class="hljs-built_in">console</span>.log(Iterator.tabulate(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>{ <span class="hljs-keyword">return</span> {<span class="hljs-attr">a</span>:i,<span class="hljs-attr">b</span>:<span class="hljs-number">10</span>-i};}).take(<span class="hljs-number">10</span>).sorted(<span class="hljs-string">'b'</span>).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'REVERSED'</span>)
-<span class="hljs-built_in">console</span>.log(Stream.of(<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>).reversed().toArray())
+<span class="hljs-built_in">console</span>.log(Iterator.of(<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>).reversed().toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'CONCAT'</span>)
-<span class="hljs-built_in">console</span>.log(Stream.of(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">45</span>,<span class="hljs-number">2</span>,<span class="hljs-number">34</span>).concat([<span class="hljs-number">64</span>,<span class="hljs-number">325</span>,<span class="hljs-number">4</span>]).toArray())
-<span class="hljs-built_in">console</span>.log(Stream.of(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5412</span>,<span class="hljs-number">53</span>,<span class="hljs-number">2</span>).concat(Stream.of(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>)).toArray())
+<span class="hljs-built_in">console</span>.log(Iterator.of(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">45</span>,<span class="hljs-number">2</span>,<span class="hljs-number">34</span>).concat([<span class="hljs-number">64</span>,<span class="hljs-number">325</span>,<span class="hljs-number">4</span>]).toArray())
+<span class="hljs-built_in">console</span>.log(Iterator.of(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5412</span>,<span class="hljs-number">53</span>,<span class="hljs-number">2</span>).concat(Iterator.of(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>)).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'NEXT'</span>)
-<span class="hljs-keyword">var</span> s = Stream.of(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>)
+<span class="hljs-keyword">var</span> s = Iterator.of(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>)
 <span class="hljs-built_in">console</span>.log(s.nextValue())
 <span class="hljs-built_in">console</span>.log(s.nextValue())
 <span class="hljs-built_in">console</span>.log(s.nextValue())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'APPLYGENERATOR'</span>)
-<span class="hljs-keyword">var</span> smoothGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params">stream</span>)</span>{
-    <span class="hljs-keyword">var</span> prev2 = stream.nextValue()
-    <span class="hljs-keyword">var</span> prev1 = stream.nextValue()
-    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> stream){
+<span class="hljs-keyword">var</span> smoothGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params">Iterator</span>)</span>{
+    <span class="hljs-keyword">var</span> prev2 = Iterator.nextValue()
+    <span class="hljs-keyword">var</span> prev1 = Iterator.nextValue()
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> Iterator){
         <span class="hljs-keyword">yield</span> (i+prev1+prev2)/<span class="hljs-number">3</span>
         prev2=prev1
         prev1=i
     }
 }
-<span class="hljs-built_in">console</span>.log(Stream.of(<span class="hljs-number">1</span>,<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>).applyGenerator(smoothGen).toArray())
+<span class="hljs-built_in">console</span>.log(Iterator.of(<span class="hljs-number">1</span>,<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>).applyGenerator(smoothGen).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'APPLYOPERATOR'</span>)
-<span class="hljs-keyword">var</span> s1 = Stream.iterate(<span class="hljs-number">1</span>,s=&gt;s+<span class="hljs-number">2</span>)
-<span class="hljs-keyword">var</span> s2 = Stream.iterate(<span class="hljs-number">1</span>,s=&gt;s+<span class="hljs-number">3</span>)
+<span class="hljs-keyword">var</span> s1 = Iterator.iterate(<span class="hljs-number">1</span>,s=&gt;s+<span class="hljs-number">2</span>)
+<span class="hljs-keyword">var</span> s2 = Iterator.iterate(<span class="hljs-number">1</span>,s=&gt;s+<span class="hljs-number">3</span>)
 <span class="hljs-built_in">console</span>.log(s1.applyOperator(<span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>a+b, s2).take(<span class="hljs-number">5</span>).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'FLATMAP'</span>)
-<span class="hljs-keyword">var</span> s = Stream.tabulate(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>i).skip(<span class="hljs-number">1</span>)
+<span class="hljs-keyword">var</span> s = Iterator.tabulate(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>i).skip(<span class="hljs-number">1</span>)
 <span class="hljs-built_in">console</span>.log(s.flatMap(<span class="hljs-function"><span class="hljs-params">s</span>=&gt;</span>[s/<span class="hljs-number">4</span>,s/<span class="hljs-number">2</span>,<span class="hljs-number">3</span>*s/<span class="hljs-number">4</span>]).limit(<span class="hljs-number">10</span>).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'BUFFER'</span>)
-<span class="hljs-keyword">var</span> s = Stream.range(<span class="hljs-number">1</span>,<span class="hljs-number">21</span>)
+<span class="hljs-keyword">var</span> s = Iterator.range(<span class="hljs-number">1</span>,<span class="hljs-number">21</span>)
 <span class="hljs-built_in">console</span>.log(s.buffer(<span class="hljs-number">5</span>).map(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e.reduce(<span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>a+b)).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'APPEND'</span>)
-<span class="hljs-keyword">var</span> s = Stream.of(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
+<span class="hljs-keyword">var</span> s = Iterator.of(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
 <span class="hljs-built_in">console</span>.log(s.append(<span class="hljs-number">65</span>,<span class="hljs-number">12</span>,<span class="hljs-number">32</span>).toArray())
 
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'ZIP'</span>)
-<span class="hljs-keyword">var</span> s1 = Stream.range(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>)
-<span class="hljs-keyword">var</span> s2 = Stream.range(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>).reversed()
+<span class="hljs-keyword">var</span> s1 = Iterator.range(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>)
+<span class="hljs-keyword">var</span> s2 = Iterator.range(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>).reversed()
 <span class="hljs-built_in">console</span>.log(s1.zip(s2).toArray())
 </pre>
         </td>

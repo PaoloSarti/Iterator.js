@@ -1,4 +1,4 @@
-const Stream = require('../Stream.js')
+const Iterator = require('../Iterator.js')
 
 /**
  * takes an object that maps his keys to probabilities
@@ -24,7 +24,7 @@ function distribution(o){
  */
 function normalize(obj){
     var normalized = {}
-    var sum = Stream.values(obj).sum()
+    var sum = Iterator.values(obj).sum()
     for(let key in obj){
         normalized[key] = obj[key]/sum
     }
@@ -34,9 +34,9 @@ function normalize(obj){
 var d = {A:0.5,B:0.25,C:0.125,D:0.125}
 console.log('Discrete distribution: '+JSON.stringify(d))
 
-var s = Stream.generate(distribution(d))
+var s = Iterator.generate(distribution(d))
 
-console.log('Example stream: '+s.toArray(20))
+console.log('Example Iterator: '+s.toArray(20))
 var n = 100000
 console.log('n: '+n)
 var counts = s.take(n).reduce((o,e)=>{
@@ -54,7 +54,7 @@ console.log('Frequencies: '+JSON.stringify(normalized)+'\n')
  * -sum_j(p_j*log2(p_j))
  */
 function entropy(obj){
-    return -Stream.values(obj)
+    return -Iterator.values(obj)
                     .map(p=>p*Math.log2(p))
                     .sum()
 }
@@ -64,7 +64,7 @@ function entropy(obj){
  * 1-sum_j(p_j^2)
  */
 function giniIndex(obj){
-    return 1-Stream.values(obj)
+    return 1-Iterator.values(obj)
                     .map(p=>p*p)
                     .sum()
 }
@@ -73,7 +73,7 @@ function giniIndex(obj){
  * Calculates the misclassification error of a distribution object or of a normalized array (sum of values = 1)
  */
 function misclassificationError(obj){
-    return 1-Stream.values(obj).max()
+    return 1-Iterator.values(obj).max()
 }
 
 var uniform = {A:0.25,B:0.25,C:0.25,D:0.25}
@@ -114,17 +114,17 @@ console.log('Encoding Test of '+JSON.stringify(d)+'\n')
 
 var naiveEncoding = {A:[0,0],B:[0,1],C:[1,0],D:[1,1]}
 console.log('naiveEncoding: '+JSON.stringify(naiveEncoding))
-console.log('Size of encoded stream from '+n+' symbols: '+s.map(encodeFn(naiveEncoding)).take(n).flatten().size())
+console.log('Size of encoded Iterator from '+n+' symbols: '+s.map(encodeFn(naiveEncoding)).take(n).flatten().size())
 
 var smartEncoding = {A:[0],B:[1,0],C:[1,1,0],D:[1,1,1]}
 console.log('smartEncoding: '+JSON.stringify(smartEncoding))
-console.log('Size of encoded stream from '+n+' symbols: '+s.map(encodeFn(smartEncoding)).take(n).flatten().size()+'\n')
+console.log('Size of encoded Iterator from '+n+' symbols: '+s.map(encodeFn(smartEncoding)).take(n).flatten().size()+'\n')
 
 /**
  * From {A:[0,0],B:[0,1],C:[1,0],D:[1,1]}, gives {"00":"A","01":"B","10":C,"11":D}
  */
 function decodeObj(obj){
-    return Stream.from(obj)
+    return Iterator.from(obj)
         .map(e=>{
             var o = {}
             var joined = e.value.join('')
@@ -137,16 +137,16 @@ var decoded = decodeObj(naiveEncoding)
 console.log('Decode '+JSON.stringify(naiveEncoding)+': '+JSON.stringify(decoded))
 
 /**
- * returns a stream, decoded with decObj, assuming a fixed encoding length
+ * returns a Iterator, decoded with decObj, assuming a fixed encoding length
  */
-function decodeNaive(stream,decObj){
+function decodeNaive(Iterator,decObj){
     var l
     for(var key in decObj){
         l = key.length
         break
     }
-    return stream.buffer(l).map(e=>decObj[e.join('')])
+    return Iterator.buffer(l).map(e=>decObj[e.join('')])
 }
 
-var decodedStream = decodeNaive(s.map(encodeFn(naiveEncoding)).flatten(),decoded)
-console.log('Decoded naive: '+decodedStream.take(10).toArray())
+var decodedIterator = decodeNaive(s.map(encodeFn(naiveEncoding)).flatten(),decoded)
+console.log('Decoded naive: '+decodedIterator.take(10).toArray())

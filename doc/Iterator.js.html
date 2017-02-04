@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Stream.js</title>
+  <title>Iterator.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="doc-style.css" />
   <script src="doc-filelist.js"></script>
   <script>
     var relativeDir = "";
-    var thisFile = "Stream.js";
+    var thisFile = "Iterator.js";
     var defaultSidebar = true;
   </script>
   <script src="doc-script.js"></script>
@@ -32,7 +32,7 @@
     
       <tr>
         <td class="docs">
-          <h1>Stream.js</h1>
+          <h1>Iterator.js</h1>
         </td>
         <td class="code highlight"></td>
       </tr>
@@ -45,16 +45,13 @@
 </div>
 <div class="dox">
 <div class="summary">
-<p>A Stream is an iterable object that provides some functional operators to initiate or manipulate its
-elements.</p>
+<p>An Iterator is a wrapper to JavaScript's iterators that adds functional operators such as map, reduce.</p>
 </div>
 <div class="body">
-<p>Most of its methods return a new Stream, but they don't execute any operation until explicitly requested.
-E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be safely iterated again.
-This is because the functions are executed lazily.</p>
-<p>Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.</p>
-<p>Use this library from this link in development: https://rawgit.com/PaoloSarti/Stream.js/master/Stream.js
-and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/Stream.js</p>
+<p>Most of its methods return a new Iterator, but they don't execute any operation until explicitly requested.
+This is because the functions are executed lazily.
+E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Iterator, so that it can't be safely iterated again.</p>
+<p>Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.</p>
 </div>
 </div>
 
@@ -64,10 +61,10 @@ and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/
 
 (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">var</span> root = <span class="hljs-keyword">this</span>
-    <span class="hljs-keyword">var</span> previous_Stream = root.Stream
+    <span class="hljs-keyword">var</span> previous_Iterator = root.Iterator
 
 
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Stream</span>(<span class="hljs-params">iterator</span>)</span>{
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Iterator</span>(<span class="hljs-params">iterator</span>)</span>{
     <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
 </pre>
         </td>
@@ -124,7 +121,7 @@ and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/
 </div>
 <div class="dox">
 <div class="summary">
-<p>returns a new Stream that can iterate only on the first n elements (or less) of the stream</p>
+<p>returns a new Iterator that can iterate only on the first n elements (or less) of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -140,7 +137,7 @@ and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/
                     <span class="hljs-keyword">yield</span> next.value
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(takeGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(takeGen())
     }
 
 </pre>
@@ -175,8 +172,8 @@ and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/
 </div>
 <div class="dox">
 <div class="summary">
-<p>returns a new Stream that skips the first n elements. Notice that this method actually iterates over
-the stream immediatly to reach the new starting position.</p>
+<p>returns a new Iterator that skips the first n elements. Notice that this method actually iterates over
+the Iterator immediatly to reach the new starting position.</p>
 </div>
 <div class="body">
 </div>
@@ -197,7 +194,7 @@ the stream immediatly to reach the new starting position.</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(skipGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(skipGen())
     }
 
 </pre>
@@ -232,9 +229,9 @@ the stream immediatly to reach the new starting position.</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>maps every element of the stream to another element applying the given function.
+<p>maps every element of the Iterator to another element applying the given function.
 If a string is provided, then it will map the object property with that name
-A new Stream is returned.</p>
+A new Iterator is returned.</p>
 </div>
 <div class="body">
 </div>
@@ -253,7 +250,7 @@ A new Stream is returned.</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(mapGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(mapGen())
     }
 
 </pre>
@@ -267,8 +264,8 @@ A new Stream is returned.</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Maps the elements to a list of elements, each one yielded in the new Stream.
-If a string is provided, then it will map the object property with that name.</p>
+<p>Maps the elements to a list of elements, each one yielded in the new Iterator.
+If a string is provided, then it will flatmap the object property with that name (it has to be an iterable tough).</p>
 </div>
 <div class="body">
 </div>
@@ -291,7 +288,7 @@ If a string is provided, then it will map the object property with that name.</p
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(flatMapGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(flatMapGen())
     }
 
 </pre>
@@ -305,7 +302,7 @@ If a string is provided, then it will map the object property with that name.</p
 </div>
 <div class="dox">
 <div class="summary">
-<p>Flattens a stream of iterables into a Stream of the elements of each iterable</p>
+<p>Flattens a Iterator of iterables into a Iterator of the elements of each iterable</p>
 </div>
 <div class="body">
 </div>
@@ -327,7 +324,7 @@ If a string is provided, then it will map the object property with that name.</p
 <div class="dox">
 <div class="summary">
 <p>Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
-the element will be present in the returned Stream.</p>
+the element will be present in the returned Iterator.</p>
 </div>
 <div class="body">
 </div>
@@ -356,7 +353,7 @@ the element will be present in the returned Stream.</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(filterGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(filterGen())
     }
 
 </pre>
@@ -371,7 +368,7 @@ the element will be present in the returned Stream.</p>
 <div class="dox">
 <div class="summary">
 <p>Takes all the elements while they satisfy the f condition.
-A new Stream is returned</p>
+A new Iterator is returned</p>
 </div>
 <div class="body">
 </div>
@@ -388,7 +385,7 @@ A new Stream is returned</p>
                 <span class="hljs-keyword">else</span> <span class="hljs-keyword">break</span>
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(takeWhileGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(takeWhileGen())
     }
     
 </pre>
@@ -402,7 +399,7 @@ A new Stream is returned</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Concats any iterable lazily. Returns a new Stream</p>
+<p>Concats any iterable lazily. Returns a new Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -419,7 +416,7 @@ A new Stream is returned</p>
                 <span class="hljs-keyword">yield</span> i
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(concatGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(concatGen())
     }
 
 </pre>
@@ -433,7 +430,7 @@ A new Stream is returned</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Produces a Stream of couples from two Streams</p>
+<p>Produces a Iterator of couples from two Iterators</p>
 </div>
 <div class="body">
 </div>
@@ -451,7 +448,7 @@ A new Stream is returned</p>
                 next2 = s.next()
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(zipGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(zipGen())
     }
 
 </pre>
@@ -465,8 +462,8 @@ A new Stream is returned</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>returns a Stream of couples in which the first element is an index (staring from 0)
-and the second is the element of the stream</p>
+<p>returns a Iterator of couples in which the first element is an index (staring from 0)
+and the second is the element of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -482,7 +479,7 @@ and the second is the element of the stream</p>
                 i++
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(zipWithIndexGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(zipWithIndexGen())
     }
 
 </pre>
@@ -520,7 +517,7 @@ and the second is the element of the stream</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Append one or more argument to the stream lazily</p>
+<p>Append one or more argument to the Iterator lazily</p>
 </div>
 <div class="body">
 </div>
@@ -538,7 +535,7 @@ and the second is the element of the stream</p>
                 <span class="hljs-keyword">yield</span> a
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(appendGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(appendGen())
     }
 
 </pre>
@@ -552,7 +549,7 @@ and the second is the element of the stream</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Generates a new Stream, in which every element is an array of n elements of the original Stream</p>
+<p>Generates a new Iterator, in which every element is an array of n elements of the original Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -578,7 +575,7 @@ and the second is the element of the stream</p>
             <span class="hljs-keyword">if</span>(a.length&gt;<span class="hljs-number">0</span>)
                 <span class="hljs-keyword">yield</span> a
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(bufGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(bufGen())
     }
 
 </pre>
@@ -592,7 +589,7 @@ and the second is the element of the stream</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Returns a Stream that is made of partial sums of every previous element of the Stream</p>
+<p>Returns a Iterator that is made of partial sums of every previous element of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -608,7 +605,7 @@ and the second is the element of the stream</p>
                 <span class="hljs-keyword">yield</span> a
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(cumulateGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(cumulateGen())
     }
 
 </pre>
@@ -622,8 +619,8 @@ and the second is the element of the stream</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Apply a custom generator on the stream.
-The generator should accept the stream as a parameter, and yield the elements of the new stream</p>
+<p>Apply a custom generator on the Iterator.
+The generator should accept the Iterator as a parameter, and yield the elements of the new Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -632,7 +629,7 @@ The generator should accept the stream as a parameter, and yield the elements of
         </td>
         <td class="code highlight">
           <pre class="javascript">    <span class="hljs-keyword">this</span>.applyGenerator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">gen</span>)</span>{
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(gen(<span class="hljs-keyword">this</span>))
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(gen(<span class="hljs-keyword">this</span>))
     }
 
 </pre>
@@ -647,7 +644,7 @@ The generator should accept the stream as a parameter, and yield the elements of
 <div class="dox">
 <div class="summary">
 <p>Takes an operator (a mapping function that takes two values and maps them into one value)
-and another stream, and applies the operator to each couple of elements of the two streams to produce another stream.</p>
+and another Iterator, and applies the operator to each couple of elements of the two Iterators to produce another Iterator.</p>
 </div>
 <div class="body">
 </div>
@@ -655,17 +652,17 @@ and another stream, and applies the operator to each couple of elements of the t
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">    <span class="hljs-keyword">this</span>.applyOperator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">operator, stream</span>)</span>{
+          <pre class="javascript">    <span class="hljs-keyword">this</span>.applyOperator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">operator, iter</span>)</span>{
         <span class="hljs-keyword">var</span> applyOpGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                <span class="hljs-keyword">var</span> n = stream.next() 
+                <span class="hljs-keyword">var</span> n = iter.next() 
                 <span class="hljs-keyword">if</span>(n.done===<span class="hljs-literal">true</span>)
                     <span class="hljs-keyword">break</span>
 
                 <span class="hljs-keyword">yield</span> operator(i,n.value)
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(applyOpGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(applyOpGen())
     }
 
 </pre>
@@ -678,10 +675,10 @@ and another stream, and applies the operator to each couple of elements of the t
   <a class="pilcrow" href="#section-22" id="section-22"></a>
 </div>
 <p>HEAVY METHODS
-THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!</p>
+THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
 <div class="dox">
 <div class="summary">
-<p>Returns a sorted version of the stream, according to natural ordering or according to a compare function, or by natural ordering of a property</p>
+<p>Returns a sorted version of the Iterator, according to natural ordering or according to a compare function, or by natural ordering of a property</p>
 </div>
 <div class="body">
 </div>
@@ -715,7 +712,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!</p>
             }
         }
 
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(arrayGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(arrayGen())
     }
 
 </pre>
@@ -768,7 +765,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(distinctGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(distinctGen())
     }
 
     <span class="hljs-keyword">this</span>.reversed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
@@ -779,7 +776,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!</p>
                 <span class="hljs-keyword">yield</span> e
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(revGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(revGen())
     }
 
     <span class="hljs-keyword">this</span>.reverse = <span class="hljs-keyword">this</span>.reversed
@@ -794,7 +791,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!</p>
   <a class="pilcrow" href="#section-25" id="section-25"></a>
 </div>
 <p>EAGER METHODS
-THEY CONSUME THE STREAM!</p>
+THEY CONSUME THE Iterator!</p>
 
         </td>
         <td class="code highlight">
@@ -810,7 +807,7 @@ THEY CONSUME THE STREAM!</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Executes f(e) for every element e of the stream</p>
+<p>Executes f(e) for every element e of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -837,7 +834,7 @@ THEY CONSUME THE STREAM!</p>
 <div class="summary">
 <p>process(n,f)
 process n elements with the function f
-Like forEach, but only for the first n elements, then returns the rest of the Stream</p>
+Like forEach, but only for the first n elements, then returns the rest of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -921,8 +918,8 @@ Like forEach, but only for the first n elements, then returns the rest of the St
 </div>
 <div class="dox">
 <div class="summary">
-<p>Groups the elements of the Stream using as key the result of function f applied to every element.
-Or, if you pass a String, groups by that property (in a stream of objects)</p>
+<p>Groups the elements of the Iterator using as key the result of function f applied to every element.
+Or, if you pass a String, groups by that property (in an Iterator of objects)</p>
 </div>
 <div class="body">
 </div>
@@ -962,7 +959,7 @@ Or, if you pass a String, groups by that property (in a stream of objects)</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Partitions the elements of a Stream</p>
+<p>Partitions the elements of a Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -984,7 +981,7 @@ Or, if you pass a String, groups by that property (in a stream of objects)</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Applies f on an accumulator (initiated with start) and every element of the Stream.
+<p>Applies f on an accumulator (initiated with start) and every element of the Iterator.
 Returns a single value</p>
 </div>
 <div class="body">
@@ -1018,7 +1015,7 @@ Returns a single value</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Counts the elements of the stream that satisfy a predicate. If no predicate is specified, counts every element</p>
+<p>Counts the elements of the Iterator that satisfy a predicate. If no predicate is specified, counts every element</p>
 </div>
 <div class="body">
 </div>
@@ -1120,7 +1117,7 @@ Returns a single value</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Minimum numeric value of the stream (if empty = Number.MAX_VALUE)</p>
+<p>Minimum numeric value of the Iterator (if empty = Number.MAX_VALUE)</p>
 </div>
 <div class="body">
 </div>
@@ -1147,7 +1144,7 @@ Returns a single value</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Maximum numeric value of the Stream (if empty = Number.MAX_VALUE)</p>
+<p>Maximum numeric value of the Iterator (if empty = Number.MAX_VALUE)</p>
 </div>
 <div class="body">
 </div>
@@ -1174,7 +1171,7 @@ Returns a single value</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Sums all the elements of the stream</p>
+<p>Sums all the elements of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -1227,7 +1224,7 @@ Returns a single value</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Creates a new array with the stream elements.
+<p>Creates a new array with the Iterator elements.
 If you provide a parameter,
 only n elements (or less) will be consumed and pushed into the array</p>
 </div>
@@ -1288,7 +1285,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Stream composed of the given arguments</p>
+<p>Iterator composed of the given arguments</p>
 </div>
 <div class="body">
 </div>
@@ -1296,14 +1293,14 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.of = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">Iterator.of = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
     <span class="hljs-keyword">var</span> ofGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
         <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> a <span class="hljs-keyword">of</span> args){
             <span class="hljs-keyword">yield</span> a
         }
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(ofGen())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(ofGen())
 }
 
 </pre>
@@ -1317,7 +1314,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Infinite stream of values obtained by applying the function f from the start value</p>
+<p>Infinite Iterator of values obtained by applying the function f from the start value</p>
 </div>
 <div class="body">
 </div>
@@ -1325,15 +1322,15 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.iterate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">start, f</span>)</span>{
-    <span class="hljs-keyword">var</span> lazyStream = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
+          <pre class="javascript">Iterator.iterate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">start, f</span>)</span>{
+    <span class="hljs-keyword">var</span> lazyIterator = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
         <span class="hljs-keyword">var</span> cur = start
         <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
             <span class="hljs-keyword">yield</span> cur
             cur = f(cur)
         }
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(lazyStream())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(lazyIterator())
 }
 
 </pre>
@@ -1347,7 +1344,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Infinite stream of values obtained by applying the function f to the index (starting from 0)</p>
+<p>Infinite Iterator of values obtained by applying the function f to the index (starting from 0)</p>
 </div>
 <div class="body">
 </div>
@@ -1355,13 +1352,13 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.tabulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">Iterator.tabulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
     <span class="hljs-keyword">var</span> tabGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
         <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; ;i++){
             <span class="hljs-keyword">yield</span> f(i)
         }
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(tabGen())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(tabGen())
 }
 
 </pre>
@@ -1375,7 +1372,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Limited Stream of integers, from startInclusive to endExclusive</p>
+<p>Limited Iterator of integers, from startInclusive to endExclusive</p>
 </div>
 <div class="body">
 </div>
@@ -1383,7 +1380,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.range = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">startInclusive, endExclusive, step</span>)</span>{
+          <pre class="javascript">Iterator.range = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">startInclusive, endExclusive, step</span>)</span>{
     <span class="hljs-keyword">if</span>(step===<span class="hljs-literal">undefined</span>)
         step=<span class="hljs-number">1</span>
 
@@ -1398,7 +1395,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
             <span class="hljs-keyword">yield</span> i
         }
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(ranGen())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(ranGen())
 }
 
 </pre>
@@ -1412,7 +1409,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>infinite stream composed of the results of the function f</p>
+<p>infinite Iterator composed of the results of the function f</p>
 </div>
 <div class="body">
 </div>
@@ -1420,13 +1417,13 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.generate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">Iterator.generate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
     <span class="hljs-keyword">var</span> genGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
         <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
             <span class="hljs-keyword">yield</span> f()
         }
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(genGen())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(genGen())
 }
 
 </pre>
@@ -1440,7 +1437,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Infinite stream of random values between 0 (inclusive) and 1 (exclusive)</p>
+<p>Infinite Iterator of random values between 0 (inclusive) and 1 (exclusive)</p>
 </div>
 <div class="body">
 </div>
@@ -1448,7 +1445,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.random = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>Stream.generate(<span class="hljs-built_in">Math</span>.random)
+          <pre class="javascript">Iterator.random = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>Iterator.generate(<span class="hljs-built_in">Math</span>.random)
 
 </pre>
         </td>
@@ -1461,7 +1458,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>infinite stream composed of only the element e</p>
+<p>infinite Iterator composed of only the element e</p>
 </div>
 <div class="body">
 </div>
@@ -1469,13 +1466,13 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.fill = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
+          <pre class="javascript">Iterator.fill = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>)</span>{
     <span class="hljs-keyword">var</span> fillGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
         <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
             <span class="hljs-keyword">yield</span> e
         }
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(fillGen())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(fillGen())
 }
 
 </pre>
@@ -1489,7 +1486,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>An empty stream</p>
+<p>An empty Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -1497,10 +1494,10 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.empty = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">Iterator.empty = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">var</span> emptyGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
     }
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(emptyGen())
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(emptyGen())
 }
 
 </pre>
@@ -1514,9 +1511,9 @@ only n elements (or less) will be consumed and pushed into the array</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Creates a stream from an array, object, Set, Map.
-With a Map, it creates a stream of {key:<key>, value:<value>} objects
-With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
+<p>Creates a Iterator from an array, object, Set, Map.
+With a Map, it creates a Iterator of {key:<key>, value:<value>} objects
+With an object, it creates a Iterator of {name:<name>, value:<value>} objects</p>
 </div>
 <div class="body">
 </div>
@@ -1524,7 +1521,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">Stream.from = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a</span>)</span>{
+          <pre class="javascript">Iterator.from = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a</span>)</span>{
 </pre>
         </td>
       </tr>
@@ -1539,7 +1536,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
         </td>
         <td class="code highlight">
           <pre class="javascript">    <span class="hljs-keyword">if</span>(a === <span class="hljs-literal">null</span> || a === <span class="hljs-literal">undefined</span>)
-        <span class="hljs-keyword">return</span> Stream.empty()
+        <span class="hljs-keyword">return</span> Iterator.empty()
     
 </pre>
         </td>
@@ -1555,7 +1552,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
         </td>
         <td class="code highlight">
           <pre class="javascript">    <span class="hljs-keyword">if</span>(a.constructor === <span class="hljs-built_in">Array</span> || a.constructor === <span class="hljs-built_in">Set</span> || <span class="hljs-keyword">typeof</span> a === <span class="hljs-string">'string'</span>)
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(a[<span class="hljs-built_in">Symbol</span>.iterator]())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(a[<span class="hljs-built_in">Symbol</span>.iterator]())
 
 </pre>
         </td>
@@ -1579,7 +1576,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(mapGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(mapGen())
     }
 
 </pre>
@@ -1604,7 +1601,7 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Stream(objGen())
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(objGen())
     }
 
 </pre>
@@ -1616,29 +1613,57 @@ With an object, it creates a stream of {name:<name>, value:<value>} objects</p>
           <div class="pilwrap">
   <a class="pilcrow" href="#section-56" id="section-56"></a>
 </div>
-<p>if something else, call Stream.of</p>
+<p>if something else, call Iterator.of</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">    <span class="hljs-keyword">return</span> Stream.of(a)
+          <pre class="javascript">    <span class="hljs-keyword">return</span> Iterator.of(a)
 }
 
-Stream.noConflict = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-  root.Stream = previous_Stream
-  <span class="hljs-keyword">return</span> Stream
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-57" id="section-57"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Like Iterator.from, but, in case of objects or Maps, returns a Iterator of values instead of a Iterator of pairs</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">Iterator.values = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a</span>)</span>{
+    <span class="hljs-keyword">var</span> s = Iterator.from(a)
+    <span class="hljs-keyword">if</span>(a.constructor === <span class="hljs-built_in">Map</span> || (<span class="hljs-keyword">typeof</span> a !== <span class="hljs-string">'string'</span> &amp;&amp; a.constructor !== <span class="hljs-built_in">Set</span> &amp;&amp; a.constructor !== <span class="hljs-built_in">Array</span>)){
+        <span class="hljs-keyword">return</span> s.map(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e.value)
+    }
+    <span class="hljs-keyword">return</span> s
+}
+
+Iterator.noConflict = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  root.Iterator = previous_Iterator
+  <span class="hljs-keyword">return</span> Iterator
 }
 
 <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> exports !== <span class="hljs-string">'undefined'</span> ) {
     <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports ) {
-      exports = <span class="hljs-built_in">module</span>.exports = Stream
+      exports = <span class="hljs-built_in">module</span>.exports = Iterator
     }
-    exports.Stream = Stream
+    exports.Iterator = Iterator
 } 
 <span class="hljs-keyword">else</span> {
-    root.Stream = Stream
+    root.Iterator = Iterator
 }
 
 }.call(<span class="hljs-keyword">this</span>))
+
 </pre>
         </td>
       </tr>

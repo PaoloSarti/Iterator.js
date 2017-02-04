@@ -23,23 +23,27 @@
     <div id="headings">
 
       <div class="heading h1">
-        <a href="#stream.js">Stream.js</a>
+        <a href="#iterator.js">Iterator.js</a>
       </div>
 
     </div>
   </div>
   <div id="sidebar-toggle"></div>
   <div id="container">
-    <div class="docs markdown"><div class="pilwrap" id="stream.js">
+    <div class="docs markdown"><div class="pilwrap" id="iterator.js">
   <h1>
-    <a href="#stream.js" name="stream.js" class="pilcrow"></a>
-Stream.js
+    <a href="#iterator.js" name="iterator.js" class="pilcrow"></a>
+Iterator.js
   </h1>
 </div>
-<p>A Stream is an iterable object that provides some functional operators to initiate and manipulate its elements.</p>
+<p>An Iterator is a wrapper to JavaScript's iterators that adds functional operators to it (such as map, reduce...).</p>
+<p>Most of its methods return a new Iterator, but they don't execute any operation until explicitly requested.
+This is because the functions are executed lazily.
+E.g. by iterating with a for..of, or by calling toArray or other methods that consume the Iterator.</p>
+<p>Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.</p>
 <p>The implementation is based on new features of the language such as generators.
 In fact, it was developed mostly because I wanted to test the new features.</p>
-<p>For a more feature-rich, tested and reliable implementation of the Stream concept, please see http://winterbe.github.io/streamjs/</p>
+<p>For a more feature-rich, tested and reliable implementation of this concept, please see http://winterbe.github.io/streamjs/</p>
 </div>
   </div>
 </body>

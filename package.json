@@ -1,19 +1,19 @@
 {
-  "name": "stream.js",
-  "version": "1.0.0",
+  "name": "iteratorjs",
+  "version": "0.1.0",
   "description": "Functional operators wrapper to iterators, implemented through javascript's generators",
-  "main": "Stream.js",
+  "main": "Iterator.js",
   "scripts": {
-    "test": "experiments/StreamUsage.js"
+    "test": "experiments/IteratorUsage.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/PaoloSarti/Stream.js.git"
+    "url": "git+ssh://git@github.com/PaoloSarti/Iterator.js.git"
   },
   "author": "Paolo Sarti",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PaoloSarti/Stream.js/issues"
+    "url": "https://github.com/PaoloSarti/Iterator.js/issues"
   },
-  "homepage": "https://github.com/PaoloSarti/Stream.js#readme"
+  "homepage": "https://github.com/PaoloSarti/Iterator.js#readme"
 }

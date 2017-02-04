@@ -46,10 +46,10 @@
 
         </td>
         <td class="code highlight">
-          <pre class="javascript"><span class="hljs-keyword">const</span> Stream = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Stream.js"</span>)
+          <pre class="javascript"><span class="hljs-keyword">const</span> Iterator = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../Iterator.js"</span>)
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logisticMap</span>(<span class="hljs-params">x0,r</span>)</span>{
-    <span class="hljs-keyword">return</span> Stream.iterate(x0, e=&gt;r*e*(<span class="hljs-number">1</span>-x0))
+    <span class="hljs-keyword">return</span> Iterator.iterate(x0, e=&gt;r*e*(<span class="hljs-number">1</span>-x0))
 }
 
 <span class="hljs-keyword">const</span> l = logisticMap(<span class="hljs-number">0.9</span>,<span class="hljs-number">0.9</span>)

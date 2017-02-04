@@ -1,25 +1,22 @@
 /**
  * 
- * A Stream is an iterable object that provides some functional operators to initiate or manipulate its
- * elements.
+ * An Iterator is a wrapper to JavaScript's iterators that adds functional operators such as map, reduce.
  *
- * Most of its methods return a new Stream, but they don't execute any operation until explicitly requested.
- * E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Stream, so that it can't be safely iterated again.
+ * Most of its methods return a new Iterator, but they don't execute any operation until explicitly requested.
  * This is because the functions are executed lazily.
+ * E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Iterator, so that it can't be safely iterated again.
  * 
- * Thanks to the laziness of the execution (achieved through generators), infinite streams can be manipulated.
+ * Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.
  * 
- * Use this library from this link in development: https://rawgit.com/PaoloSarti/Stream.js/master/Stream.js
- * and from this in production: https://cdn.rawgit.com/PaoloSarti/Stream.js/master/Stream.js
  */
 "use strict";
 
 (function(){
     var root = this
-    var previous_Stream = root.Stream
+    var previous_Iterator = root.Iterator
 
 
-    function Stream(iterator){
+    function Iterator(iterator){
     var self = this
     /**
      * iterator
@@ -34,7 +31,7 @@
     this.nextValue = ()=>iterator.next().value
 
     /**
-     * returns a new Stream that can iterate only on the first n elements (or less) of the stream
+     * returns a new Iterator that can iterate only on the first n elements (or less) of the Iterator
      */
     this.take = function(n){
         var takeGen = function*(){
@@ -44,7 +41,7 @@
                     yield next.value
             }
         }
-        return new Stream(takeGen())
+        return new Iterator(takeGen())
     }
 
     /**
@@ -53,8 +50,8 @@
     this.limit = this.take
 
     /**
-     * returns a new Stream that skips the first n elements. Notice that this method actually iterates over 
-     * the stream immediatly to reach the new starting position.
+     * returns a new Iterator that skips the first n elements. Notice that this method actually iterates over 
+     * the Iterator immediatly to reach the new starting position.
      */
     this.skip = function(n){
         var ended = false
@@ -69,7 +66,7 @@
                 }
             }
         }
-        return new Stream(skipGen())
+        return new Iterator(skipGen())
     }
 
     /**
@@ -78,9 +75,9 @@
     this.drop = this.skip
 
     /**
-     * maps every element of the stream to another element applying the given function.
+     * maps every element of the Iterator to another element applying the given function.
      * If a string is provided, then it will map the object property with that name
-     * A new Stream is returned.
+     * A new Iterator is returned.
      */
     this.map = function(f){
         var mapGen = function*(){
@@ -93,11 +90,11 @@
                 }
             }
         }
-        return new Stream(mapGen())
+        return new Iterator(mapGen())
     }
 
     /**
-     * Maps the elements to a list of elements, each one yielded in the new Stream.
+     * Maps the elements to a list of elements, each one yielded in the new Iterator.
      * If a string is provided, then it will flatmap the object property with that name (it has to be an iterable tough).
      */
     this.flatMap = function(f){
@@ -115,17 +112,17 @@
                 }
             }
         }
-        return new Stream(flatMapGen())
+        return new Iterator(flatMapGen())
     }
 
     /**
-     * Flattens a stream of iterables into a Stream of the elements of each iterable
+     * Flattens a Iterator of iterables into a Iterator of the elements of each iterable
      */
     this.flatten = ()=>this.flatMap(i=>i)
 
     /**
      * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
-     *  the element will be present in the returned Stream.
+     *  the element will be present in the returned Iterator.
      */
     this.filter = function(f){
         var filterGen = function*(){
@@ -148,12 +145,12 @@
                 }
             }
         }
-        return new Stream(filterGen())
+        return new Iterator(filterGen())
     }
 
     /**
      * Takes all the elements while they satisfy the f condition.
-     * A new Stream is returned
+     * A new Iterator is returned
      */
     this.takeWhile = function(f){
         var takeWhileGen = function*(){
@@ -164,11 +161,11 @@
                 else break
             }
         }
-        return new Stream(takeWhileGen())
+        return new Iterator(takeWhileGen())
     }
     
     /**
-     * Concats any iterable lazily. Returns a new Stream
+     * Concats any iterable lazily. Returns a new Iterator
      */
     this.concat = function(s){
         var concatGen = function*(){
@@ -179,11 +176,11 @@
                 yield i
             }
         }
-        return new Stream(concatGen())
+        return new Iterator(concatGen())
     }
 
     /**
-     * Produces a Stream of couples from two Streams
+     * Produces a Iterator of couples from two Iterators
      */
     this.zip = function(s){
         var zipGen = function*(){
@@ -195,12 +192,12 @@
                 next2 = s.next()
             }
         }
-        return new Stream(zipGen())
+        return new Iterator(zipGen())
     }
 
     /**
-     * returns a Stream of couples in which the first element is an index (staring from 0)
-     * and the second is the element of the stream
+     * returns a Iterator of couples in which the first element is an index (staring from 0)
+     * and the second is the element of the Iterator
      */
     this.zipWithIndex = function(){
         var zipWithIndexGen = function*(){
@@ -210,7 +207,7 @@
                 i++
             }
         }
-        return new Stream(zipWithIndexGen())
+        return new Iterator(zipWithIndexGen())
     }
 
     /**
@@ -222,7 +219,7 @@
 
 
     /**
-     * Append one or more argument to the stream lazily
+     * Append one or more argument to the Iterator lazily
      */
     this.append = function(){
         var args = arguments
@@ -234,11 +231,11 @@
                 yield a
             }
         }
-        return new Stream(appendGen())
+        return new Iterator(appendGen())
     }
 
     /**
-     * Generates a new Stream, in which every element is an array of n elements of the original Stream
+     * Generates a new Iterator, in which every element is an array of n elements of the original Iterator
      */
     this.buffer = function(n){
         var bufGen = function*(){
@@ -258,11 +255,11 @@
             if(a.length>0)
                 yield a
         }
-        return new Stream(bufGen())
+        return new Iterator(bufGen())
     }
 
     /**
-     * Returns a Stream that is made of partial sums of every previous element of the Stream
+     * Returns a Iterator that is made of partial sums of every previous element of the Iterator
      */
     this.cumulate = function(){
         var cumulateGen = function*(){
@@ -272,38 +269,38 @@
                 yield a
             }
         }
-        return new Stream(cumulateGen())
+        return new Iterator(cumulateGen())
     }
 
     /**
-     * Apply a custom generator on the stream.
-     * The generator should accept the stream as a parameter, and yield the elements of the new stream
+     * Apply a custom generator on the Iterator.
+     * The generator should accept the Iterator as a parameter, and yield the elements of the new Iterator
      */
     this.applyGenerator = function(gen){
-        return new Stream(gen(this))
+        return new Iterator(gen(this))
     }
 
     /**
      * Takes an operator (a mapping function that takes two values and maps them into one value)
-     * and another stream, and applies the operator to each couple of elements of the two streams to produce another stream.
+     * and another Iterator, and applies the operator to each couple of elements of the two Iterators to produce another Iterator.
      */
-    this.applyOperator = function(operator, stream){
+    this.applyOperator = function(operator, iter){
         var applyOpGen = function*(){
             for(var i of iterator){
-                var n = stream.next() 
+                var n = iter.next() 
                 if(n.done===true)
                     break
 
                 yield operator(i,n.value)
             }
         }
-        return new Stream(applyOpGen())
+        return new Iterator(applyOpGen())
     }
 
     //HEAVY METHODS
-    //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE STREAM!!
+    //THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!
     /**
-     * Returns a sorted version of the stream, according to natural ordering or according to a compare function, or by natural ordering of a property
+     * Returns a sorted version of the Iterator, according to natural ordering or according to a compare function, or by natural ordering of a property
      */
     this.sorted = function(){
         var thisInstance = this
@@ -331,7 +328,7 @@
             }
         }
 
-        return new Stream(arrayGen())
+        return new Iterator(arrayGen())
     }
 
     /**
@@ -352,7 +349,7 @@
                 }
             }
         }
-        return new Stream(distinctGen())
+        return new Iterator(distinctGen())
     }
 
     this.reversed = function(){
@@ -363,16 +360,16 @@
                 yield e
             }
         }
-        return new Stream(revGen())
+        return new Iterator(revGen())
     }
 
     this.reverse = this.reversed
 
     //EAGER METHODS
-    //THEY CONSUME THE STREAM!
+    //THEY CONSUME THE Iterator!
 
     /**
-     * Executes f(e) for every element e of the stream
+     * Executes f(e) for every element e of the Iterator
      */
     this.forEach = function(f){
         for(var i of iterator){
@@ -383,7 +380,7 @@
     /**
      * process(n,f)
      * process n elements with the function f
-     * Like forEach, but only for the first n elements, then returns the rest of the Stream
+     * Like forEach, but only for the first n elements, then returns the rest of the Iterator
      */
     this.process = function(n, f){
         var ended = false
@@ -419,8 +416,8 @@
     }
 
     /**
-     * Groups the elements of the Stream using as key the result of function f applied to every element.
-     * Or, if you pass a String, groups by that property (in a stream of objects)
+     * Groups the elements of the Iterator using as key the result of function f applied to every element.
+     * Or, if you pass a String, groups by that property (in an Iterator of objects)
      */
     this.groupBy = function(f){
         var obj = {}
@@ -444,13 +441,13 @@
     }
 
     /**
-     * Partitions the elements of a Stream 
+     * Partitions the elements of a Iterator 
      */
     this.partition = this.groupBy
     this.partitionBy = this.groupBy
 
     /**
-     * Applies f on an accumulator (initiated with start) and every element of the Stream.
+     * Applies f on an accumulator (initiated with start) and every element of the Iterator.
      * Returns a single value
      */
     this.reduce = function(f,start){
@@ -468,7 +465,7 @@
     }
 
     /**
-     * Counts the elements of the stream that satisfy a predicate. If no predicate is specified, counts every element
+     * Counts the elements of the Iterator that satisfy a predicate. If no predicate is specified, counts every element
      */
     this.count = function(predicate){
         var acc = 0
@@ -506,7 +503,7 @@
     }
 
     /**
-     * Minimum numeric value of the stream (if empty = Number.MAX_VALUE)
+     * Minimum numeric value of the Iterator (if empty = Number.MAX_VALUE)
      */
     this.min = function(){
         var m = Number.MAX_VALUE
@@ -517,7 +514,7 @@
     }
 
     /**
-     * Maximum numeric value of the Stream (if empty = Number.MAX_VALUE)
+     * Maximum numeric value of the Iterator (if empty = Number.MAX_VALUE)
      */
     this.max = function(){
         var m = Number.MIN_VALUE
@@ -528,7 +525,7 @@
     }
 
     /**
-     * Sums all the elements of the stream
+     * Sums all the elements of the Iterator
      */
     this.sum = function(){
         var acc = 0
@@ -549,7 +546,7 @@
     }
 
     /**
-     * Creates a new array with the stream elements.
+     * Creates a new array with the Iterator elements.
      * If you provide a parameter,
      * only n elements (or less) will be consumed and pushed into the array
      */
@@ -578,48 +575,48 @@
 }
 
 /**
- * Stream composed of the given arguments
+ * Iterator composed of the given arguments
  */
-Stream.of = function(){
+Iterator.of = function(){
     var args = arguments
     var ofGen = function*(){
         for(var a of args){
             yield a
         }
     }
-    return new Stream(ofGen())
+    return new Iterator(ofGen())
 }
 
 /**
- * Infinite stream of values obtained by applying the function f from the start value
+ * Infinite Iterator of values obtained by applying the function f from the start value
  */
-Stream.iterate = function(start, f){
-    var lazyStream = function*() {
+Iterator.iterate = function(start, f){
+    var lazyIterator = function*() {
         var cur = start
         while(true){
             yield cur
             cur = f(cur)
         }
     }
-    return new Stream(lazyStream())
+    return new Iterator(lazyIterator())
 }
 
 /**
- * Infinite stream of values obtained by applying the function f to the index (starting from 0)
+ * Infinite Iterator of values obtained by applying the function f to the index (starting from 0)
  */
-Stream.tabulate = function(f){
+Iterator.tabulate = function(f){
     var tabGen = function*(){
         for(var i=0; ;i++){
             yield f(i)
         }
     }
-    return new Stream(tabGen())
+    return new Iterator(tabGen())
 }
 
 /** 
- * Limited Stream of integers, from startInclusive to endExclusive
+ * Limited Iterator of integers, from startInclusive to endExclusive
  */
-Stream.range = function(startInclusive, endExclusive, step){
+Iterator.range = function(startInclusive, endExclusive, step){
     if(step===undefined)
         step=1
 
@@ -634,61 +631,61 @@ Stream.range = function(startInclusive, endExclusive, step){
             yield i
         }
     }
-    return new Stream(ranGen())
+    return new Iterator(ranGen())
 }
 
 /**
- * infinite stream composed of the results of the function f
+ * infinite Iterator composed of the results of the function f
  */
-Stream.generate = function(f){
+Iterator.generate = function(f){
     var genGen = function*(){
         while(true){
             yield f()
         }
     }
-    return new Stream(genGen())
+    return new Iterator(genGen())
 }
 
 /**
- * Infinite stream of random values between 0 (inclusive) and 1 (exclusive)
+ * Infinite Iterator of random values between 0 (inclusive) and 1 (exclusive)
  */
-Stream.random = ()=>Stream.generate(Math.random)
+Iterator.random = ()=>Iterator.generate(Math.random)
 
 /**
- * infinite stream composed of only the element e
+ * infinite Iterator composed of only the element e
  */
-Stream.fill = function(e){
+Iterator.fill = function(e){
     var fillGen = function*(){
         while(true){
             yield e
         }
     }
-    return new Stream(fillGen())
+    return new Iterator(fillGen())
 }
 
 /**
- * An empty stream
+ * An empty Iterator
  */
-Stream.empty = function(){
+Iterator.empty = function(){
     var emptyGen = function*(){
     }
-    return new Stream(emptyGen())
+    return new Iterator(emptyGen())
 }
 
 /**
- * Creates a stream from an array, object, Set, Map.
- * With a Map, it creates a stream of {key:<key>, value:<value>} objects
- * With an object, it creates a stream of {name:<name>, value:<value>} objects
+ * Creates a Iterator from an array, object, Set, Map.
+ * With a Map, it creates a Iterator of {key:<key>, value:<value>} objects
+ * With an object, it creates a Iterator of {name:<name>, value:<value>} objects
  * 
  */
-Stream.from = function(a){
+Iterator.from = function(a){
     //if null
     if(a === null || a === undefined)
-        return Stream.empty()
+        return Iterator.empty()
     
     //if array or Set
     if(a.constructor === Array || a.constructor === Set || typeof a === 'string')
-        return new Stream(a[Symbol.iterator]())
+        return new Iterator(a[Symbol.iterator]())
 
     //if Map
     if(a.constructor === Map){
@@ -700,7 +697,7 @@ Stream.from = function(a){
                 }
             }
         }
-        return new Stream(mapGen())
+        return new Iterator(mapGen())
     }
 
     //if object
@@ -713,37 +710,37 @@ Stream.from = function(a){
                 }
             }
         }
-        return new Stream(objGen())
+        return new Iterator(objGen())
     }
 
-    //if something else, call Stream.of
-    return Stream.of(a)
+    //if something else, call Iterator.of
+    return Iterator.of(a)
 }
 
 /**
- * Like Stream.from, but, in case of objects or Maps, returns a stream of values instead of a stream of pairs
+ * Like Iterator.from, but, in case of objects or Maps, returns a Iterator of values instead of a Iterator of pairs
  */
-Stream.values = function(a){
-    var s = Stream.from(a)
+Iterator.values = function(a){
+    var s = Iterator.from(a)
     if(a.constructor === Map || (typeof a !== 'string' && a.constructor !== Set && a.constructor !== Array)){
         return s.map(e=>e.value)
     }
     return s
 }
 
-Stream.noConflict = function() {
-  root.Stream = previous_Stream
-  return Stream
+Iterator.noConflict = function() {
+  root.Iterator = previous_Iterator
+  return Iterator
 }
 
 if( typeof exports !== 'undefined' ) {
     if( typeof module !== 'undefined' && module.exports ) {
-      exports = module.exports = Stream
+      exports = module.exports = Iterator
     }
-    exports.Stream = Stream
+    exports.Iterator = Iterator
 } 
 else {
-    root.Stream = Stream
+    root.Iterator = Iterator
 }
 
 }.call(this))
