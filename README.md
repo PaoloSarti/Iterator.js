@@ -11,4 +11,12 @@ Thanks to the laziness of the execution (achieved through generators), infinite 
 The implementation is based on new features of the language such as generators.
 In fact, it was developed mostly because I wanted to test the new features.
 
+You can install it via NPM.
+
+```bash
+npm install iteratorgenerator
+```
+
+Or you can use it client side by including https://cdn.rawgit.com/PaoloSarti/Iterator.js/master/Iterator.js
+
 For a more reliable implementation of this concept, please see http://winterbe.github.io/streamjs/
