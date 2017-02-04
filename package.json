@@ -1,5 +1,5 @@
 {
-  "name": "iteratorjs",
+  "name": "iterator-js",
   "version": "0.1.0",
   "description": "Functional operators wrapper to iterators, implemented through javascript's generators",
   "main": "Iterator.js",
