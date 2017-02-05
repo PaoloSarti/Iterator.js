@@ -8,9 +8,6 @@ E.g. by iterating with a for..of, or by calling toArray or other methods that co
 
 Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.
 
-The implementation is based on new features of the language such as generators.
-In fact, it was developed mostly because I wanted to test the new features.
-
 You can install it via NPM.
 
 ```bash
@@ -19,4 +16,5 @@ npm install iteratorgenerator
 
 Or you can use it client side by including https://cdn.rawgit.com/PaoloSarti/Iterator.js/master/Iterator.js
 
-For a more reliable implementation of this concept, please see http://winterbe.github.io/streamjs/
+This library depends heavily on ES6 features, such as generators, Maps, Sets, the for..of construct.
+For an EcmaScript 5 (ES6 features supported) implementation of some of these concepts, please see http://winterbe.github.io/streamjs/
