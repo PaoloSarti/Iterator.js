@@ -70,6 +70,23 @@
     }
 
     /**
+     * skips every elements until a predicate returns true, then it returns the remaining elements of the Iterator
+     */
+    this.dropWhile = function(predicate){
+        var dropWhileGen = function*(){
+            var next = iterator.next()
+            while((!next.done) && predicate(next.value)){
+                next = iterator.next()
+                //just skip these
+            }
+            for(let i of iterator){
+                yield i
+            }
+        }
+        return new Iterator(dropWhileGen())
+    }
+
+    /**
      * Skip alias
      */
     this.drop = this.skip
