@@ -79,8 +79,11 @@
                 next = iterator.next()
                 //just skip these
             }
-            for(let i of iterator){
-                yield i
+            if(!next.done){
+                yield next.value
+                for(let i of iterator){
+                    yield i
+                }
             }
         }
         return new Iterator(dropWhileGen())
