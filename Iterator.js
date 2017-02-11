@@ -96,13 +96,14 @@
 
     /**
      * maps every element of the Iterator to another element applying the given function.
-     * If a string is provided, then it will map the object property with that name
+     * If a string is provided, then it will map the object property with that name.
+     * If a number is provided, then it will map the array element with that index
      * A new Iterator is returned.
      */
     this.map = function(f){
         var mapGen = function*(){
             for(var i of iterator){
-                if(typeof f === 'string'){
+                if(typeof f === 'string' || typeof f === 'number'){
                     yield i[f]
                 }
                 else if(typeof f === 'function'){
