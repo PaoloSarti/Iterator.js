@@ -512,6 +512,37 @@
     }
 
     /**
+     * returns true if every element satisfies the predicate, false otherwise
+     */
+     this.every = function(predicate){
+         for(var i of iterator){
+             if(!predicate(i)){
+                 return false
+             }
+         }
+         return true
+     }
+
+     /**
+      * Returns true if some elements statisfy the predicate, false if none satisfies
+      */
+     this.some = function(predicate){
+         for(var i of iterator){
+             if(predicate(i)){
+                 return true
+             }
+         }
+         return false
+     }
+
+     /**
+      * Returns true if the iterator included the argument (tests with the === operator)
+      */
+     this.includes = function(element){
+         return self.some(x=>x===element)
+     }
+
+    /**
      * Returns the last element
      */
     this.last = function(){
