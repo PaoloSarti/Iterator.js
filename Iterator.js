@@ -22,7 +22,6 @@
      * iterator
      */
     this[Symbol.iterator] = ()=>iterator  
-    this.iterator = ()=>iterator
 
     /**
      * It is an iterator itself
