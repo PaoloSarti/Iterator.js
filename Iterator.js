@@ -49,16 +49,15 @@
     this.limit = this.take
 
     /**
-     * returns a new Iterator that skips the first n elements. Notice that this method actually iterates over 
-     * the Iterator immediatly to reach the new starting position.
+     * returns a new Iterator that skips the first n elements.
      */
     this.skip = function(n){
-        var ended = false
-        for(var i=0; (i<n)&&(!ended); i++){
-            var next = iterator.next()
-            ended = next.done
-        }
         var skipGen = function*(){
+            var ended = false
+            for(var i=0; (i<n)&&(!ended); i++){
+                var next = iterator.next()
+                ended = next.done
+            }
             if(!ended){
                 for(var j of iterator){
                     yield j
@@ -94,6 +93,20 @@
     this.drop = this.skip
 
     /**
+     * Applies f if it's a function.
+     * If a string is provided, then it will map the object property with that name.
+     * If a number is provided, then it will map the array element with that index
+     */
+    function mapElement(e,f){
+        if(typeof f === 'string' || typeof f === 'number'){
+            return i[f]
+        }
+        else if(typeof f === 'function'){
+            return f(i)
+        }
+    }
+
+    /**
      * maps every element of the Iterator to another element applying the given function.
      * If a string is provided, then it will map the object property with that name.
      * If a number is provided, then it will map the array element with that index
@@ -102,12 +115,7 @@
     this.map = function(f){
         var mapGen = function*(){
             for(var i of iterator){
-                if(typeof f === 'string' || typeof f === 'number'){
-                    yield i[f]
-                }
-                else if(typeof f === 'function'){
-                    yield f(i)
-                }
+                yield mapElement(i,f)
             }
         }
         return new Iterator(mapGen())
@@ -120,13 +128,7 @@
     this.flatMap = function(f){
         var flatMapGen = function*(){
             for(var i of iterator){
-                var l
-                if(typeof f === 'string'){
-                    l = i[f]
-                }
-                else if(typeof f === 'function'){
-                    l=f(i)
-                }
+                var l = mapElement(i,f)
                 for(var j of l){
                     yield j
                 }
@@ -140,6 +142,27 @@
      */
     this.flatten = ()=>this.flatMap(i=>i)
 
+
+    /**
+     * check an element e. f can be a predicate, an object, or a regular expression. If it is an object, checks if the element has the same property values as the given objects
+     */
+    function check(e,f){
+        if(typeof f === 'function'){
+            return f(e)
+        }
+        else if(f.constructor === RegExp){
+            return e.search(f) !== -1
+        }
+        else if(typeof f === 'object'){
+            for(var name in f){
+                if(e[name] !== f[name]){
+                    return false
+                }
+            }
+            return true
+        }
+    }
+
     /**
      * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
      *  the element will be present in the returned Iterator.
@@ -147,21 +170,8 @@
     this.filter = function(f){
         var filterGen = function*(){
             for(var i of iterator){
-                if(typeof f === 'function'){
-                    if(f(i)===true){
-                        yield i
-                    }
-                }
-                else if(typeof f === 'object'){
-                    var allMatch = true
-                    for(var name in f){
-                        if(i[name] !== f[name]){
-                            allMatch = false
-                        }
-                    }
-                    if(allMatch){
-                        yield i
-                    }
+                if(check(i,f)){
+                    yield i
                 }
             }
         }
@@ -352,12 +362,12 @@
     }
 
     /**
-     * alias
+     * sorted alias
      */
     this.sort = this.sorted
 
     /**
-     * distinct
+     * Returns a new Iterator without repeated elements
      */
     this.distinct = function(){
         var distinctGen = function*(){
@@ -372,6 +382,9 @@
         return new Iterator(distinctGen())
     }
 
+    /**
+     * Returns a reversed version of the Iterator
+     */
     this.reversed = function(){
         var thisInstance = this
         var revGen = function*(){
@@ -485,13 +498,14 @@
     }
 
     /**
-     * Counts the elements of the Iterator that satisfy a predicate. If no predicate is specified, counts every element
+     * Counts the elements of the Iterator that satisfy a predicate / matches a regexp / contains all the values specified by an object.
+     * If no argument is specified, counts every element
      */
-    this.count = function(predicate){
+    this.count = function(f){
         var acc = 0
-        var p = predicate === undefined ? ()=>true: predicate
+        var p = f === undefined ? ()=>true: f
         for(var i of iterator){
-            if(p(i))
+            if(check(i,f))
                 acc+=1
         }
         return acc
@@ -512,11 +526,11 @@
     }
 
     /**
-     * returns true if every element satisfies the predicate, false otherwise
+     * returns true if every element satisfies the predicate / matches a regexp / contains all the values specified by an object, false otherwise
      */
-     this.every = function(predicate){
+     this.every = function(p){
          for(var i of iterator){
-             if(!predicate(i)){
+             if(!check(i,p)){
                  return false
              }
          }
@@ -524,11 +538,11 @@
      }
 
      /**
-      * Returns true if some elements statisfy the predicate, false if none satisfies
+      * Returns true if some elements statisfy the predicate  / matches a regexp / contains all the values specified by an object, false if none satisfies
       */
-     this.some = function(predicate){
+     this.some = function(p){
          for(var i of iterator){
-             if(predicate(i)){
+             if(check(i,p)){
                  return true
              }
          }
