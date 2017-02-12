@@ -99,10 +99,10 @@
      */
     function mapElement(e,f){
         if(typeof f === 'string' || typeof f === 'number'){
-            return i[f]
+            return e[f]
         }
         else if(typeof f === 'function'){
-            return f(i)
+            return f(e)
         }
     }
 
@@ -165,7 +165,7 @@
 
     /**
      * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
-     *  the element will be present in the returned Iterator.
+     * or matches the given RegExp, the element will be present in the returned Iterator.
      */
     this.filter = function(f){
         var filterGen = function*(){
