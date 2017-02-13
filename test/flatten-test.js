@@ -1,0 +1,12 @@
+QUnit.test('flatten', assert=>{
+    var it = Iterator.of([1,3,2],[3,5,21],[54,12])
+    var a = it.flatten().toArray()
+    assert.equal(a[0],1)
+    assert.equal(a[1],3)
+    assert.equal(a[2],2)
+    assert.equal(a[3],3)
+    assert.equal(a[4],5)
+    assert.equal(a[5],21)
+    assert.equal(a[6],54)
+    assert.equal(a[7],12)
+})

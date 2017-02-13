@@ -333,10 +333,9 @@
      * Returns a sorted version of the Iterator, according to natural ordering or according to a compare function, or by natural ordering of a property
      */
     this.sorted = function(){
-        var thisInstance = this
         var args = arguments
         var arrayGen = function*(){
-            var array = thisInstance.toArray()
+            var array = self.toArray()
             if(args.length === 0){
                 array.sort()
             }else if(typeof args[0] === 'string'){
@@ -604,7 +603,7 @@
      * Average
      */
     this.avg = function(){
-        var array = this.toArray()
+        var array = self.toArray()
         var sum = array.reduce((a,b)=>a+b)
         var count = array.length
         return sum / count
