@@ -51,16 +51,14 @@ console.log('Iterator FROM ITERATOR (CREATED WITH A GENERATOR)')
 var fibs = function*(){
     var a = 0
     var b = 1
-    yield a
-    yield b
     while(true){
+        yield b
         var c = a + b
         a = b
         b = c
-        yield b
     }
 }
-//a Iterator is really just a wrapper of iterators, so the constructor only takes iterators
+//a Iterator is really just a wrapper of iterators, so the constructor takes iterators
 var f = new Iterator(fibs())
 //the first ten even fibonacci numbers
 console.log(f.filter(i=>i%2==0).limit(10).toArray())
