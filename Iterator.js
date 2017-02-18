@@ -798,6 +798,24 @@
         return new Iterator(cycleGen())
     }
 
+    /**
+     * Augments the Array prototype with the "iterator" function,
+     * that returns a new Iterator over that array
+     */
+    Iterator.augmentArraysWithIterator = function(){
+        Array.prototype.iterator = function(){
+            return new Iterator(this)
+        }
+    }
+
+    /**
+     * Remove the type augmentation
+     */
+    Iterator.removeAugmentationFromArrays = function(){
+        if(Array.prototype.iterator!==undefined)
+            delete Array.prototype.iterator
+    }
+
     Iterator.noConflict = function() {
         root.Iterator = previous_Iterator
         return Iterator
