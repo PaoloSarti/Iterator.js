@@ -55,3 +55,4 @@ millis(()=>{
 millis(()=>{
     console.log(fibs().takeWhile(i=>i<Infinity).last())
 })
+
