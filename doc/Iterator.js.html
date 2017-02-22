@@ -1607,6 +1607,29 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
 </div>
 <div class="dox">
 <div class="summary">
+<p>Like range, but the second parameter is included. The third parameter is NOT supported here</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    Iterator.rangeInclusive = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">startInclusive, endInclusive</span>)</span>{
+        <span class="hljs-keyword">return</span> Iterator.range(startInclusive,endExclusive+<span class="hljs-number">1</span>)
+    }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-56" id="section-56"></a>
+</div>
+<div class="dox">
+<div class="summary">
 <p>infinite Iterator composed of the results of the function f</p>
 </div>
 <div class="body">
@@ -1631,7 +1654,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-56" id="section-56"></a>
+  <a class="pilcrow" href="#section-57" id="section-57"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1652,7 +1675,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-57" id="section-57"></a>
+  <a class="pilcrow" href="#section-58" id="section-58"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1680,7 +1703,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-58" id="section-58"></a>
+  <a class="pilcrow" href="#section-59" id="section-59"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1704,7 +1727,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-59" id="section-59"></a>
+  <a class="pilcrow" href="#section-60" id="section-60"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1726,7 +1749,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-60" id="section-60"></a>
+  <a class="pilcrow" href="#section-61" id="section-61"></a>
 </div>
 <p>if null</p>
 
@@ -1742,7 +1765,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-61" id="section-61"></a>
+  <a class="pilcrow" href="#section-62" id="section-62"></a>
 </div>
 <p>if Iterable or Iterator</p>
 
@@ -1758,7 +1781,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-62" id="section-62"></a>
+  <a class="pilcrow" href="#section-63" id="section-63"></a>
 </div>
 <p>if object</p>
 
@@ -1780,7 +1803,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-63" id="section-63"></a>
+  <a class="pilcrow" href="#section-64" id="section-64"></a>
 </div>
 <p>if something else, call Iterator.of</p>
 
@@ -1796,7 +1819,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-64" id="section-64"></a>
+  <a class="pilcrow" href="#section-65" id="section-65"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1823,7 +1846,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-65" id="section-65"></a>
+  <a class="pilcrow" href="#section-66" id="section-66"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1853,7 +1876,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-66" id="section-66"></a>
+  <a class="pilcrow" href="#section-67" id="section-67"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1879,7 +1902,7 @@ that returns a new Iterator over that array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-67" id="section-67"></a>
+  <a class="pilcrow" href="#section-68" id="section-68"></a>
 </div>
 <div class="dox">
 <div class="summary">

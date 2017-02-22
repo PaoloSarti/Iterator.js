@@ -709,6 +709,13 @@
     }
 
     /**
+     * Like range, but the second parameter is included. The third parameter is NOT supported here
+     */
+    Iterator.rangeInclusive = function(startInclusive, endInclusive){
+        return Iterator.range(startInclusive,endExclusive+1)
+    }
+
+    /**
      * infinite Iterator composed of the results of the function f
      */
     Iterator.generate = function(f){
