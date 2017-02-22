@@ -1866,7 +1866,7 @@ that returns a new Iterator over that array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">    Iterator.augmentArraysWithIterator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">    Iterator.augmentArrays = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
         <span class="hljs-built_in">Array</span>.prototype.iterator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(<span class="hljs-keyword">this</span>)
         }
@@ -1891,7 +1891,7 @@ that returns a new Iterator over that array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">    Iterator.removeAugmentationFromArrays = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">    Iterator.removeArraysAugmentation = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
         <span class="hljs-keyword">if</span>(<span class="hljs-built_in">Array</span>.prototype.iterator!==<span class="hljs-literal">undefined</span>)
             <span class="hljs-keyword">delete</span> <span class="hljs-built_in">Array</span>.prototype.iterator
     }
