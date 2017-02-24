@@ -512,7 +512,7 @@
             var acc = 0
             var p = f === undefined ? ()=>true: f
             for(var i of iterator){
-                if(check(i,f))
+                if(check(i,p))
                     acc+=1
             }
             return acc
