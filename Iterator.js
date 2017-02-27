@@ -457,7 +457,8 @@
 
         /**
          * Groups the elements of the Iterator using as key the result of function f applied to every element.
-         * Or, if you pass a String, groups by that property (in an Iterator of objects)
+         * Or, if you pass a String, groups by that property (in an Iterator of objects).
+         * A second optional argument can be passed, to apply a terminal function to the grouped collections
          */
         this.groupBy = function(f){
             var obj = {}
@@ -477,6 +478,19 @@
                     obj[key].push(e)
                 }
             })
+
+            
+            if(arguments.length === 2){
+                var termFuncString = arguments[1]
+                var iterOb = iteratorsObject(obj)
+                var aggregatedObj = {}
+                for(var key in iterOb){
+                    if(iterOb[key].constructor === Iterator)
+                        aggregatedObj[key]=iterOb[key][termFuncString]()
+                }
+                return aggregatedObj
+            }
+
             return obj
         }
 
@@ -837,6 +851,33 @@
     }
 
     Iterator.isIterable = i=>isIterable(i)
+
+    function iteratorsObject(){
+        var iterOb = {}
+
+        if(arguments.length===1){
+            let o = arguments[0]
+            for(var key in o){
+                if(o[key].constructor === Array){
+                    iterOb[key] = Iterator.from(o[key])
+                }
+                else {
+                    iterOb[key] = o[key]
+                }
+            }
+        }
+
+        iterOb["toArraysObject"] = function(){
+            var obj = {}
+            for(var key in iterOb){
+                if(iterOb[key].constructor === Iterator){
+                    obj[key] = iterOb[key].toArray()
+                }
+            }
+            return obj
+        }
+        return iterOb
+    }
 
     if( typeof exports !== 'undefined' ) {
         if( typeof module !== 'undefined' && module.exports ) {
