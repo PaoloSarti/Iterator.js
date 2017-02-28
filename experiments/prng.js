@@ -22,7 +22,3 @@ console.log("Java random: "+javaRandom(43).toArray(20))
 
 //Pseudo random bit generator
 var prbg = prng=>prng.map(i=>i%2)
-
-var javaRandomBg = seed => prbg(javaRandom(seed))
-
-console.log(javaRandomBg(43).take(100000).avg())

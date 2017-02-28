@@ -96,6 +96,11 @@
         }
 
         /**
+         * dropWhile alias
+         */
+        this.skipWhile = this.dropWhile
+
+        /**
          * Skip alias
          */
         this.drop = this.skip
@@ -622,6 +627,18 @@
         }
 
         /**
+         * Multiplies all the elements of the Iterator
+         * If the Iterator is empty, returns 1
+         */
+        this.product = function(){
+            var acc = 1
+            for(var i of iterator){
+                acc *= i
+            }
+            return acc
+        }
+
+        /**
          * Average
          */
         this.avg = function(){
@@ -835,6 +852,15 @@
     Iterator.removeArraysAugmentation = function(){
         if(Array.prototype.iterator!==undefined)
             delete Array.prototype.iterator
+    }
+
+    /**
+     * augments the arrays before executing the block, then removes the augmentation
+     */
+    Iterator.augmented = function(block){
+        Iterator.augmentArrays()
+        block()
+        Iterator.removeArraysAugmentation()
     }
 
     Iterator.noConflict = function() {
