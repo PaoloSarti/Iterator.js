@@ -16,7 +16,7 @@
     var previous_Iterator = root.Iterator
 
     function Iterator(it){
-        var self = this
+        var iter = {}
 
         var iterator
         if(isIterable(it)){
@@ -29,18 +29,18 @@
         /**
          * iterator
          */
-        this[Symbol.iterator] = ()=>iterator  
+        iter[Symbol.iterator] = ()=>iterator  
 
         /**
-         * It is an iterator itself
+         * It is an iterator ititer
          */
-        this.next = ()=>iterator.next()
-        this.nextValue = ()=>iterator.next().value
+        iter.next = ()=>iterator.next()
+        iter.nextValue = ()=>iterator.next().value
 
         /**
          * returns a new Iterator that can iterate only on the first n elements (or less) of the Iterator
          */
-        this.take = function(n){
+        iter.take = function(n){
             var takeGen = function*(){
                 for(var i=0; i<n; i++){
                     var next = iterator.next()
@@ -48,18 +48,18 @@
                         yield next.value
                 }
             }
-            return new Iterator(takeGen())
+            return Iterator(takeGen())
         }
 
         /**
          * take alias
          */
-        this.limit = this.take
+        iter.limit = iter.take
 
         /**
          * returns a new Iterator that skips the first n elements.
          */
-        this.skip = function(n){
+        iter.skip = function(n){
             var skipGen = function*(){
                 var ended = false
                 for(var i=0; (i<n)&&(!ended); i++){
@@ -72,13 +72,13 @@
                     }
                 }
             }
-            return new Iterator(skipGen())
+            return Iterator(skipGen())
         }
 
         /**
          * skips every elements until a predicate returns true, then it returns the remaining elements of the Iterator
          */
-        this.dropWhile = function(predicate){
+        iter.dropWhile = function(predicate){
             var dropWhileGen = function*(){
                 var next = iterator.next()
                 while((!next.done) && predicate(next.value)){
@@ -92,18 +92,18 @@
                     }
                 }
             }
-            return new Iterator(dropWhileGen())
+            return Iterator(dropWhileGen())
         }
 
         /**
          * dropWhile alias
          */
-        this.skipWhile = this.dropWhile
+        iter.skipWhile = iter.dropWhile
 
         /**
          * Skip alias
          */
-        this.drop = this.skip
+        iter.drop = iter.skip
 
         /**
          * Applies f if it's a function.
@@ -125,20 +125,20 @@
          * If a number is provided, then it will map the array element with that index
          * A new Iterator is returned.
          */
-        this.map = function(f){
+        iter.map = function(f){
             var mapGen = function*(){
                 for(var i of iterator){
                     yield mapElement(i,f)
                 }
             }
-            return new Iterator(mapGen())
+            return Iterator(mapGen())
         }
 
         /**
          * Maps the elements to a list of elements, each one yielded in the new Iterator.
          * If a string is provided, then it will flatmap the object property with that name (it has to be an iterable tough).
          */
-        this.flatMap = function(f){
+        iter.flatMap = function(f){
             var flatMapGen = function*(){
                 for(var i of iterator){
                     var l = mapElement(i,f)
@@ -147,13 +147,13 @@
                     }
                 }
             }
-            return new Iterator(flatMapGen())
+            return Iterator(flatMapGen())
         }
 
         /**
          * Flattens a Iterator of iterables into a Iterator of the elements of each iterable
          */
-        this.flatten = ()=>this.flatMap(i=>i)
+        iter.flatten = ()=>iter.flatMap(i=>i)
 
 
         /**
@@ -180,7 +180,7 @@
          * Filters every element with a function or an object, if the function f returns true, or the element has the property values given by the object,
          * or matches the given RegExp, the element will be present in the returned Iterator.
          */
-        this.filter = function(f){
+        iter.filter = function(f){
             var filterGen = function*(){
                 for(var i of iterator){
                     if(check(i,f)){
@@ -188,14 +188,14 @@
                     }
                 }
             }
-            return new Iterator(filterGen())
+            return Iterator(filterGen())
         }
 
         /**
          * Takes all the elements while they satisfy the f condition.
          * A new Iterator is returned
          */
-        this.takeWhile = function(f){
+        iter.takeWhile = function(f){
             var takeWhileGen = function*(){
                 for(var i of iterator){
                     if(f(i)){
@@ -204,13 +204,13 @@
                     else break
                 }
             }
-            return new Iterator(takeWhileGen())
+            return Iterator(takeWhileGen())
         }
         
         /**
          * Concats any iterable lazily. Returns a new Iterator
          */
-        this.concat = function(s){
+        iter.concat = function(s){
             var concatGen = function*(){
                 for(var i of iterator){
                     yield i
@@ -219,13 +219,13 @@
                     yield i
                 }
             }
-            return new Iterator(concatGen())
+            return Iterator(concatGen())
         }
 
         /**
          * Produces a Iterator of couples from two Iterators
          */
-        this.zip = function(s){
+        iter.zip = function(s){
             var zipGen = function*(){
                 var next1 = iterator.next()
                 var next2 = s.next()
@@ -235,14 +235,14 @@
                     next2 = s.next()
                 }
             }
-            return new Iterator(zipGen())
+            return Iterator(zipGen())
         }
 
         /**
          * returns a Iterator of couples in which the first element is an index (staring from 0)
          * and the second is the element of the Iterator
          */
-        this.zipWithIndex = function(){
+        iter.zipWithIndex = function(){
             var zipWithIndexGen = function*(){
                 var i=0
                 for(var e of iterator){
@@ -250,26 +250,26 @@
                     i++
                 }
             }
-            return new Iterator(zipWithIndexGen())
+            return Iterator(zipWithIndexGen())
         }
 
         /**
          * zipWithIndex alias
          */
-        this.enumerate = this.zipWithIndex
+        iter.enumerate = iter.zipWithIndex
 
         /**
          * Filter by providing a predicate on the index (starting from 0 from the current item)
          */
-        this.filterByIndex = function(f){
-            return self.zipWithIndex().filter(e=>f(e[0])).map(e=>e[1])
+        iter.filterByIndex = function(f){
+            return iter.zipWithIndex().filter(e=>f(e[0])).map(e=>e[1])
         }
 
 
         /**
          * Append one or more argument to the Iterator lazily
          */
-        this.append = function(){
+        iter.append = function(){
             var args = arguments
             var appendGen = function*(){
                 for(var i of iterator){
@@ -279,13 +279,13 @@
                     yield a
                 }
             }
-            return new Iterator(appendGen())
+            return Iterator(appendGen())
         }
 
         /**
          * Generates a new Iterator, in which every element is an array of n elements of the original Iterator
          */
-        this.buffer = function(n){
+        iter.buffer = function(n){
             var bufGen = function*(){
                 var j = 0
                 var a = []
@@ -303,13 +303,13 @@
                 if(a.length>0)
                     yield a
             }
-            return new Iterator(bufGen())
+            return Iterator(bufGen())
         }
 
         /**
          * Returns a Iterator that is made of partial sums of every previous element of the Iterator
          */
-        this.cumulate = function(){
+        iter.cumulate = function(){
             var cumulateGen = function*(){
                 var a = 0
                 for(var i of iterator){
@@ -317,22 +317,22 @@
                     yield a
                 }
             }
-            return new Iterator(cumulateGen())
+            return Iterator(cumulateGen())
         }
 
         /**
          * Apply a custom generator on the Iterator.
          * The generator should accept the Iterator as a parameter, and yield the elements of the new Iterator
          */
-        this.applyGenerator = function(gen){
-            return new Iterator(gen(this))
+        iter.applyGenerator = function(gen){
+            return Iterator(gen(iter))
         }
 
         /**
          * Takes an operator (a mapping function that takes two values and maps them into one value)
          * and another Iterator, and applies the operator to each couple of elements of the two Iterators to produce another Iterator.
          */
-        this.applyOperator = function(operator, iter){
+        iter.applyOperator = function(operator, iter){
             var applyOpGen = function*(){
                 for(var i of iterator){
                     var n = iter.next() 
@@ -342,7 +342,7 @@
                     yield operator(i,n.value)
                 }
             }
-            return new Iterator(applyOpGen())
+            return Iterator(applyOpGen())
         }
 
         //HEAVY METHODS
@@ -350,10 +350,10 @@
         /**
          * Returns a sorted version of the Iterator, according to natural ordering or according to a compare function, or by natural ordering of a property
          */
-        this.sorted = function(){
+        iter.sorted = function(){
             var args = arguments
             var arrayGen = function*(){
-                var array = self.toArray()
+                var array = iter.toArray()
                 if(args.length === 0){
                     array.sort()
                 }else if(typeof args[0] === 'string'){
@@ -375,18 +375,18 @@
                 }
             }
 
-            return new Iterator(arrayGen())
+            return Iterator(arrayGen())
         }
 
         /**
          * sorted alias
          */
-        this.sort = this.sorted
+        iter.sort = iter.sorted
 
         /**
          * Returns a new Iterator without repeated elements
          */
-        this.distinct = function(){
+        iter.distinct = function(){
             var distinctGen = function*(){
                 var s = new Set()
                 for(var e of iterator){
@@ -396,24 +396,23 @@
                     }
                 }
             }
-            return new Iterator(distinctGen())
+            return Iterator(distinctGen())
         }
 
         /**
          * Returns a reversed version of the Iterator
          */
-        this.reversed = function(){
-            var thisInstance = this
+        iter.reversed = function(){
             var revGen = function*(){
-                var array = thisInstance.toArray().reverse()
+                var array = iter.toArray().reverse()
                 for(var e of array){
                     yield e
                 }
             }
-            return new Iterator(revGen())
+            return Iterator(revGen())
         }
 
-        this.reverse = this.reversed
+        iter.reverse = iter.reversed
 
         //EAGER METHODS
         //THEY CONSUME THE Iterator!
@@ -421,7 +420,7 @@
         /**
          * Executes f(e) for every element e of the Iterator
          */
-        this.forEach = function(f){
+        iter.forEach = function(f){
             for(var i of iterator){
                 f(i)
             }
@@ -432,7 +431,7 @@
          * process n elements with the function f
          * Like forEach, but only for the first n elements, then returns the rest of the Iterator
          */
-        this.process = function(n, f){
+        iter.process = function(n, f){
             var ended = false
             for(var i=0; i<n && !ended; i++){
                 var e = iterator.next()
@@ -443,20 +442,20 @@
                     f(e.value)
                 }
             }
-            return this
+            return iter
         }
 
         /**
          * equivalent to s.forEach(console.log)
          */
-        this.log = function(){
-            this.forEach(console.log)
+        iter.log = function(){
+            iter.forEach(console.log)
         }
 
         /**
          * Finds the first occurence of an element e that satisfies f(e) and returns it
          */
-        this.find = function(f){
+        iter.find = function(f){
             for(var i of iterator){
                 if(f(i)===true){
                     return i
@@ -470,9 +469,9 @@
          * Or, if you pass a String, groups by that property (in an Iterator of objects).
          * A second optional argument can be passed, to apply a terminal function to the grouped collections
          */
-        this.groupBy = function(f){
+        iter.groupBy = function(f){
             var obj = {}
-            this.forEach(e=>{
+            iter.forEach(e=>{
                 var key
                 if(typeof f === 'function'){
                     key  = f(e)
@@ -507,14 +506,14 @@
         /**
          * Partitions the elements of a Iterator 
          */
-        this.partition = this.groupBy
-        this.partitionBy = this.groupBy
+        iter.partition = iter.groupBy
+        iter.partitionBy = iter.groupBy
 
         /**
          * Applies f on an accumulator (initiated with start) and every element of the Iterator.
          * Returns a single value
          */
-        this.reduce = function(f,start){
+        iter.reduce = function(f,start){
             var acc
             if(start===undefined){
                 acc = iterator.next().value
@@ -532,7 +531,7 @@
          * Counts the elements of the Iterator that satisfy a predicate / matches a regexp / contains all the values specified by an object.
          * If no argument is specified, counts every element
          */
-        this.count = function(f){
+        iter.count = function(f){
             var acc = 0
             var p = f === undefined ? ()=>true: f
             for(var i of iterator){
@@ -545,12 +544,12 @@
         /**
          * count alias
          */
-        this.size = this.count
+        iter.size = iter.count
 
         /**
          * Returns the first element
          */
-        this.first = function(){
+        iter.first = function(){
             for(var i of iterator){
                 return i
             }
@@ -559,7 +558,7 @@
         /**
          * returns true if every element satisfies the predicate / matches a regexp / contains all the values specified by an object, false otherwise
          */
-        this.every = function(p){
+        iter.every = function(p){
             for(var i of iterator){
                 if(!check(i,p)){
                     return false
@@ -571,7 +570,7 @@
         /**
          * Returns true if some elements statisfy the predicate  / matches a regexp / contains all the values specified by an object, false if none satisfies
          */
-         this.some = function(p){
+         iter.some = function(p){
              for(var i of iterator){
                  if(check(i,p)){
                      return true
@@ -583,14 +582,14 @@
         /**
          * Returns true if the iterator included the argument (tests with the === operator)
          */
-         this.includes = function(element){
-             return self.some(x=>x===element)
+         iter.includes = function(element){
+             return iter.some(x=>x===element)
          }
 
         /**
          * Returns the last element
          */
-        this.last = function(){
+        iter.last = function(){
             var l
             for(var i of iterator){
                 l=i
@@ -601,7 +600,7 @@
         /**
          * Minimum numeric value of the Iterator (if empty = Number.MAX_VALUE)
          */
-        this.min = function(){
+        iter.min = function(){
             var m = Number.MAX_VALUE
             for(var i of iterator){
                 m = m>i ? i : m
@@ -612,7 +611,7 @@
         /**
          * Maximum numeric value of the Iterator (if empty = Number.MAX_VALUE)
          */
-        this.max = function(){
+        iter.max = function(){
             var m = Number.MIN_VALUE
             for(var i of iterator){
                 m = m<i ? i : m
@@ -623,7 +622,7 @@
         /**
          * Sums all the elements of the Iterator
          */
-        this.sum = function(){
+        iter.sum = function(){
             var acc = 0
             for(var i of iterator){
                 acc+=i
@@ -635,7 +634,7 @@
          * Multiplies all the elements of the Iterator
          * If the Iterator is empty, returns 1
          */
-        this.product = function(){
+        iter.product = function(){
             var acc = 1
             for(var i of iterator){
                 acc *= i
@@ -646,8 +645,8 @@
         /**
          * Average
          */
-        this.avg = function(){
-            var array = self.toArray()
+        iter.avg = function(){
+            var array = iter.toArray()
             var sum = array.reduce((a,b)=>a+b)
             var count = array.length
             return sum / count
@@ -658,7 +657,7 @@
          * If you provide a parameter,
          * only n elements (or less) will be consumed and pushed into the array
          */
-        this.toArray = function(n){
+        iter.toArray = function(n){
             if(n===undefined){
                 var a = []
                 var next = iterator.next()
@@ -669,17 +668,18 @@
                 return a
             }
             else {
-                return self.take(n).toArray()
+                return iter.take(n).toArray()
             }
         }
 
         /**
          * Shortcut to toArray().join()
          */
-        this.join = function(sep){
-            return self.toArray().join(sep)
+        iter.join = function(sep){
+            return iter.toArray().join(sep)
         }
 
+        return iter
     }
 
     /**
@@ -692,7 +692,7 @@
                 yield a
             }
         }
-        return new Iterator(ofGen())
+        return Iterator(ofGen())
     }
 
     /**
@@ -706,7 +706,7 @@
                 cur = f(cur)
             }
         }
-        return new Iterator(lazyIterator())
+        return Iterator(lazyIterator())
     }
 
     /**
@@ -718,7 +718,7 @@
                 yield f(i)
             }
         }
-        return new Iterator(tabGen())
+        return Iterator(tabGen())
     }
 
 
@@ -741,7 +741,7 @@
                 yield i
             }
         }
-        return new Iterator(ranGen())
+        return Iterator(ranGen())
     }
 
     /**
@@ -760,8 +760,13 @@
                 yield f()
             }
         }
-        return new Iterator(genGen())
+        return Iterator(genGen())
     }
+
+    /**
+     * generate alias
+     */
+    Iterator.continually = Iterator.generate
 
     /**
      * Infinite Iterator of random values between 0 (inclusive) and 1 (exclusive)
@@ -777,7 +782,7 @@
                 yield e
             }
         }
-        return new Iterator(fillGen())
+        return Iterator(fillGen())
     }
 
     /**
@@ -785,7 +790,7 @@
      */
     Iterator.empty = function(){
         var emptyGen = function*(){}
-        return new Iterator(emptyGen())
+        return Iterator(emptyGen())
     }
 
     /**
@@ -809,7 +814,7 @@
                     yield [e,a[e]]
                 }
             }
-            return new Iterator(objGen())
+            return Iterator(objGen())
         }
 
         //if something else, call Iterator.of
@@ -822,7 +827,7 @@
     Iterator.values = function(a){
         var s = Iterator.from(a)
         if(a.constructor === Map || (typeof a !== 'string' && a.constructor !== Set && a.constructor !== Array)){
-            return s.map(e=>e.value)
+            return s.map(1)
         }
         return s
     }
@@ -838,7 +843,7 @@
                 }
             }
         }
-        return new Iterator(cycleGen())
+        return Iterator(cycleGen())
     }
 
     /**
@@ -847,7 +852,7 @@
      */
     Iterator.augmentArrays = function(){
         Array.prototype.iterator = function(){
-            return new Iterator(this)
+            return Iterator(this)
         }
     }
 
@@ -874,7 +879,7 @@
     }
 
     function isIterator(i){
-        return typeof i.next !== undefined
+        return i.next !== undefined && typeof i.next === 'function'
     }
 
     function isIterable(i){

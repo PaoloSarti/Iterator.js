@@ -58,8 +58,7 @@ var fibs = function*(){
         b = c
     }
 }
-//a Iterator is really just a wrapper of iterators, so the constructor takes iterators
-var f = new Iterator(fibs())
+var f = Iterator(fibs())
 //the first ten even fibonacci numbers
 console.log(f.filter(i=>i%2==0).limit(10).toArray())
 

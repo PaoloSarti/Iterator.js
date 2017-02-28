@@ -1,6 +1,6 @@
 QUnit.test('constructor iterable', assert=>{
 var a = [2,1,3,2]
-    var it = new Iterator(a)
+    var it = Iterator(a)
     assert.equal(it.nextValue(),2)
     assert.equal(it.nextValue(),1)
     assert.equal(it.nextValue(),3)
@@ -10,7 +10,7 @@ var a = [2,1,3,2]
 
 QUnit.test('constructor iterator', assert=>{
     var a = [2,1,3,2]
-    var it = new Iterator(a[Symbol.iterator]())
+    var it = Iterator(a[Symbol.iterator]())
     assert.equal(it.nextValue(),2)
     assert.equal(it.nextValue(),1)
     assert.equal(it.nextValue(),3)
@@ -29,7 +29,7 @@ QUnit.test('constructor generator', assert=>{
             b = b + c
         }
     }
-    var it = new Iterator(fibs())
+    var it = Iterator(fibs())
     assert.equal(it.nextValue(),1)
     assert.equal(it.nextValue(),1)
     assert.equal(it.nextValue(),2)

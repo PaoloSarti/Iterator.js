@@ -127,8 +127,8 @@ function decodeObj(obj){
     return Iterator.from(obj)
         .map(e=>{
             var o = {}
-            var joined = e.value.join('')
-            o[joined]=e.name
+            var joined = e[1].join('')
+            o[joined]=e[0]
             return o })
         .reduce(Object.assign,{})
 }
