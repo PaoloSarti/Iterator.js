@@ -1,0 +1,16 @@
+QUnit.test( 'enumerate test', assert => {
+    var it = Iterator.of(3,2,5,3).enumerate()
+
+    var a = it.nextValue()
+    assert.equal(a[0],0)
+    assert.equal(a[1],3)
+    a = it.nextValue()
+    assert.equal(a[0],1)
+    assert.equal(a[1],2)
+    a = it.nextValue()
+    assert.equal(a[0],2)
+    assert.equal(a[1],5)
+    a = it.nextValue()
+    assert.equal(a[0],3)
+    assert.equal(a[1],3)
+})

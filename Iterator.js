@@ -254,6 +254,11 @@
         }
 
         /**
+         * zipWithIndex alias
+         */
+        this.enumerate = this.zipWithIndex
+
+        /**
          * Filter by providing a predicate on the index (starting from 0 from the current item)
          */
         this.filterByIndex = function(f){
