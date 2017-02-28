@@ -46,12 +46,12 @@
 <div class="dox">
 <div class="summary">
 <p>An Iterator is a wrapper to JavaScript's iterators that adds functional operators such as map, reduce.</p>
+</div>
+<div class="body">
 <p>Most of its methods return a new Iterator, but they don't execute any operation until explicitly requested.
 This is because the functions are executed lazily.
 E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Iterator, so that it can't be safely iterated again.</p>
 <p>Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.</p>
-</div>
-<div class="body">
 </div>
 </div>
 
@@ -64,7 +64,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
     <span class="hljs-keyword">var</span> previous_Iterator = root.Iterator
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Iterator</span>(<span class="hljs-params">it</span>)</span>{
-        <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>
+        <span class="hljs-keyword">var</span> iter = {}
 
         <span class="hljs-keyword">var</span> iterator
         <span class="hljs-keyword">if</span>(isIterable(it)){
@@ -93,7 +93,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>[<span class="hljs-built_in">Symbol</span>.iterator] = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator  
+          <pre class="javascript">        iter[<span class="hljs-built_in">Symbol</span>.iterator] = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator  
 
 </pre>
         </td>
@@ -106,7 +106,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 </div>
 <div class="dox">
 <div class="summary">
-<p>It is an iterator itself</p>
+<p>It is an iterator ititer</p>
 </div>
 <div class="body">
 </div>
@@ -114,8 +114,8 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.next = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator.next()
-        <span class="hljs-keyword">this</span>.nextValue = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator.next().value
+          <pre class="javascript">        iter.next = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator.next()
+        iter.nextValue = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iterator.next().value
 
 </pre>
         </td>
@@ -136,7 +136,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.take = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+          <pre class="javascript">        iter.take = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
             <span class="hljs-keyword">var</span> takeGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;n; i++){
                     <span class="hljs-keyword">var</span> next = iterator.next()
@@ -144,7 +144,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
                         <span class="hljs-keyword">yield</span> next.value
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(takeGen())
+            <span class="hljs-keyword">return</span> Iterator(takeGen())
         }
 
 </pre>
@@ -166,7 +166,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.limit = <span class="hljs-keyword">this</span>.take
+          <pre class="javascript">        iter.limit = iter.take
 
 </pre>
         </td>
@@ -187,7 +187,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.skip = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+          <pre class="javascript">        iter.skip = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
             <span class="hljs-keyword">var</span> skipGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">var</span> ended = <span class="hljs-literal">false</span>
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; (i&lt;n)&amp;&amp;(!ended); i++){
@@ -200,7 +200,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
                     }
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(skipGen())
+            <span class="hljs-keyword">return</span> Iterator(skipGen())
         }
 
 </pre>
@@ -222,7 +222,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.dropWhile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">predicate</span>)</span>{
+          <pre class="javascript">        iter.dropWhile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">predicate</span>)</span>{
             <span class="hljs-keyword">var</span> dropWhileGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">var</span> next = iterator.next()
                 <span class="hljs-keyword">while</span>((!next.done) &amp;&amp; predicate(next.value)){
@@ -248,7 +248,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
                     }
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(dropWhileGen())
+            <span class="hljs-keyword">return</span> Iterator(dropWhileGen())
         }
 
 </pre>
@@ -262,7 +262,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 </div>
 <div class="dox">
 <div class="summary">
-<p>Skip alias</p>
+<p>dropWhile alias</p>
 </div>
 <div class="body">
 </div>
@@ -270,7 +270,7 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.drop = <span class="hljs-keyword">this</span>.skip
+          <pre class="javascript">        iter.skipWhile = iter.dropWhile
 
 </pre>
         </td>
@@ -280,6 +280,27 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
         <td class="docs">
           <div class="pilwrap">
   <a class="pilcrow" href="#section-10" id="section-10"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Skip alias</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.drop = iter.skip
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -309,7 +330,7 @@ If a number is provided, then it will map the array element with that index</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-11" id="section-11"></a>
+  <a class="pilcrow" href="#section-12" id="section-12"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -324,45 +345,13 @@ A new Iterator is returned.</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.map = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.map = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">var</span> mapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                     <span class="hljs-keyword">yield</span> mapElement(i,f)
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(mapGen())
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-12" id="section-12"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>Maps the elements to a list of elements, each one yielded in the new Iterator.
-If a string is provided, then it will flatmap the object property with that name (it has to be an iterable tough).</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.flatMap = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
-            <span class="hljs-keyword">var</span> flatMapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                    <span class="hljs-keyword">var</span> l = mapElement(i,f)
-                    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j <span class="hljs-keyword">of</span> l){
-                        <span class="hljs-keyword">yield</span> j
-                    }
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(flatMapGen())
+            <span class="hljs-keyword">return</span> Iterator(mapGen())
         }
 
 </pre>
@@ -376,7 +365,8 @@ If a string is provided, then it will flatmap the object property with that name
 </div>
 <div class="dox">
 <div class="summary">
-<p>Flattens a Iterator of iterables into a Iterator of the elements of each iterable</p>
+<p>Maps the elements to a list of elements, each one yielded in the new Iterator.
+If a string is provided, then it will flatmap the object property with that name (it has to be an iterable tough).</p>
 </div>
 <div class="body">
 </div>
@@ -384,8 +374,17 @@ If a string is provided, then it will flatmap the object property with that name
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.flatten = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span><span class="hljs-keyword">this</span>.flatMap(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>i)
-
+          <pre class="javascript">        iter.flatMap = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+            <span class="hljs-keyword">var</span> flatMapGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">var</span> l = mapElement(i,f)
+                    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> j <span class="hljs-keyword">of</span> l){
+                        <span class="hljs-keyword">yield</span> j
+                    }
+                }
+            }
+            <span class="hljs-keyword">return</span> Iterator(flatMapGen())
+        }
 
 </pre>
         </td>
@@ -395,6 +394,28 @@ If a string is provided, then it will flatmap the object property with that name
         <td class="docs">
           <div class="pilwrap">
   <a class="pilcrow" href="#section-14" id="section-14"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Flattens a Iterator of iterables into a Iterator of the elements of each iterable</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.flatten = <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>iter.flatMap(<span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>i)
+
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -430,7 +451,7 @@ If a string is provided, then it will flatmap the object property with that name
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-15" id="section-15"></a>
+  <a class="pilcrow" href="#section-16" id="section-16"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -443,7 +464,7 @@ or matches the given RegExp, the element will be present in the returned Iterato
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.filter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.filter = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">var</span> filterGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                     <span class="hljs-keyword">if</span>(check(i,f)){
@@ -451,7 +472,7 @@ or matches the given RegExp, the element will be present in the returned Iterato
                     }
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(filterGen())
+            <span class="hljs-keyword">return</span> Iterator(filterGen())
         }
 
 </pre>
@@ -461,7 +482,7 @@ or matches the given RegExp, the element will be present in the returned Iterato
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-16" id="section-16"></a>
+  <a class="pilcrow" href="#section-17" id="section-17"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -474,7 +495,7 @@ A new Iterator is returned</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.takeWhile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.takeWhile = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">var</span> takeWhileGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                     <span class="hljs-keyword">if</span>(f(i)){
@@ -483,40 +504,9 @@ A new Iterator is returned</p>
                     <span class="hljs-keyword">else</span> <span class="hljs-keyword">break</span>
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(takeWhileGen())
+            <span class="hljs-keyword">return</span> Iterator(takeWhileGen())
         }
         
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-17" id="section-17"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>Concats any iterable lazily. Returns a new Iterator</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.concat = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>)</span>{
-            <span class="hljs-keyword">var</span> concatGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                    <span class="hljs-keyword">yield</span> i
-                }
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> s){
-                    <span class="hljs-keyword">yield</span> i
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(concatGen())
-        }
-
 </pre>
         </td>
       </tr>
@@ -528,7 +518,7 @@ A new Iterator is returned</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Produces a Iterator of couples from two Iterators</p>
+<p>Concats any iterable lazily. Returns a new Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -536,17 +526,16 @@ A new Iterator is returned</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.zip = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>)</span>{
-            <span class="hljs-keyword">var</span> zipGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> next1 = iterator.next()
-                <span class="hljs-keyword">var</span> next2 = s.next()
-                <span class="hljs-keyword">while</span>((!next1.done)&amp;&amp;(!next2.done)){
-                    <span class="hljs-keyword">yield</span> [next1.value,next2.value]
-                    next1 = iterator.next()
-                    next2 = s.next()
+          <pre class="javascript">        iter.concat = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>)</span>{
+            <span class="hljs-keyword">var</span> concatGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">yield</span> i
+                }
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> s){
+                    <span class="hljs-keyword">yield</span> i
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(zipGen())
+            <span class="hljs-keyword">return</span> Iterator(concatGen())
         }
 
 </pre>
@@ -560,8 +549,7 @@ A new Iterator is returned</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>returns a Iterator of couples in which the first element is an index (staring from 0)
-and the second is the element of the Iterator</p>
+<p>Produces a Iterator of couples from two Iterators</p>
 </div>
 <div class="body">
 </div>
@@ -569,15 +557,17 @@ and the second is the element of the Iterator</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.zipWithIndex = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">var</span> zipWithIndexGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> iterator){
-                    <span class="hljs-keyword">yield</span> [i,e]
-                    i++
+          <pre class="javascript">        iter.zip = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>)</span>{
+            <span class="hljs-keyword">var</span> zipGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">var</span> next1 = iterator.next()
+                <span class="hljs-keyword">var</span> next2 = s.next()
+                <span class="hljs-keyword">while</span>((!next1.done)&amp;&amp;(!next2.done)){
+                    <span class="hljs-keyword">yield</span> [next1.value,next2.value]
+                    next1 = iterator.next()
+                    next2 = s.next()
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(zipWithIndexGen())
+            <span class="hljs-keyword">return</span> Iterator(zipGen())
         }
 
 </pre>
@@ -591,7 +581,8 @@ and the second is the element of the Iterator</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Filter by providing a predicate on the index (starting from 0 from the current item)</p>
+<p>returns a Iterator of couples in which the first element is an index (staring from 0)
+and the second is the element of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -599,10 +590,16 @@ and the second is the element of the Iterator</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.filterByIndex = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
-            <span class="hljs-keyword">return</span> self.zipWithIndex().filter(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>f(e[<span class="hljs-number">0</span>])).map(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e[<span class="hljs-number">1</span>])
+          <pre class="javascript">        iter.zipWithIndex = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> zipWithIndexGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">yield</span> [i,e]
+                    i++
+                }
+            }
+            <span class="hljs-keyword">return</span> Iterator(zipWithIndexGen())
         }
-
 
 </pre>
         </td>
@@ -615,7 +612,7 @@ and the second is the element of the Iterator</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Append one or more argument to the Iterator lazily</p>
+<p>zipWithIndex alias</p>
 </div>
 <div class="body">
 </div>
@@ -623,18 +620,7 @@ and the second is the element of the Iterator</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.append = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
-            <span class="hljs-keyword">var</span> appendGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                    <span class="hljs-keyword">yield</span> i
-                }
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> a <span class="hljs-keyword">of</span> args){
-                    <span class="hljs-keyword">yield</span> a
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(appendGen())
-        }
+          <pre class="javascript">        iter.enumerate = iter.zipWithIndex
 
 </pre>
         </td>
@@ -647,6 +633,62 @@ and the second is the element of the Iterator</p>
 </div>
 <div class="dox">
 <div class="summary">
+<p>Filter by providing a predicate on the index (starting from 0 from the current item)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.filterByIndex = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+            <span class="hljs-keyword">return</span> iter.zipWithIndex().filter(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>f(e[<span class="hljs-number">0</span>])).map(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e[<span class="hljs-number">1</span>])
+        }
+
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-23" id="section-23"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Append one or more argument to the Iterator lazily</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.append = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
+            <span class="hljs-keyword">var</span> appendGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">yield</span> i
+                }
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> a <span class="hljs-keyword">of</span> args){
+                    <span class="hljs-keyword">yield</span> a
+                }
+            }
+            <span class="hljs-keyword">return</span> Iterator(appendGen())
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-24" id="section-24"></a>
+</div>
+<div class="dox">
+<div class="summary">
 <p>Generates a new Iterator, in which every element is an array of n elements of the original Iterator</p>
 </div>
 <div class="body">
@@ -655,7 +697,7 @@ and the second is the element of the Iterator</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.buffer = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+          <pre class="javascript">        iter.buffer = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
             <span class="hljs-keyword">var</span> bufGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
                 <span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>
                 <span class="hljs-keyword">var</span> a = []
@@ -673,61 +715,7 @@ and the second is the element of the Iterator</p>
                 <span class="hljs-keyword">if</span>(a.length&gt;<span class="hljs-number">0</span>)
                     <span class="hljs-keyword">yield</span> a
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(bufGen())
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-23" id="section-23"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>Returns a Iterator that is made of partial sums of every previous element of the Iterator</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.cumulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">var</span> cumulateGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> a = <span class="hljs-number">0</span>
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                    a = a + i
-                    <span class="hljs-keyword">yield</span> a
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(cumulateGen())
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-24" id="section-24"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>Apply a custom generator on the Iterator.
-The generator should accept the Iterator as a parameter, and yield the elements of the new Iterator</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.applyGenerator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">gen</span>)</span>{
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(gen(<span class="hljs-keyword">this</span>))
+            <span class="hljs-keyword">return</span> Iterator(bufGen())
         }
 
 </pre>
@@ -741,8 +729,7 @@ The generator should accept the Iterator as a parameter, and yield the elements 
 </div>
 <div class="dox">
 <div class="summary">
-<p>Takes an operator (a mapping function that takes two values and maps them into one value)
-and another Iterator, and applies the operator to each couple of elements of the two Iterators to produce another Iterator.</p>
+<p>Returns a Iterator that is made of partial sums of every previous element of the Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -750,17 +737,15 @@ and another Iterator, and applies the operator to each couple of elements of the
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.applyOperator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">operator, iter</span>)</span>{
-            <span class="hljs-keyword">var</span> applyOpGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.cumulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> cumulateGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">var</span> a = <span class="hljs-number">0</span>
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                    <span class="hljs-keyword">var</span> n = iter.next() 
-                    <span class="hljs-keyword">if</span>(n.done===<span class="hljs-literal">true</span>)
-                        <span class="hljs-keyword">break</span>
-
-                    <span class="hljs-keyword">yield</span> operator(i,n.value)
+                    a = a + i
+                    <span class="hljs-keyword">yield</span> a
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(applyOpGen())
+            <span class="hljs-keyword">return</span> Iterator(cumulateGen())
         }
 
 </pre>
@@ -771,6 +756,63 @@ and another Iterator, and applies the operator to each couple of elements of the
         <td class="docs">
           <div class="pilwrap">
   <a class="pilcrow" href="#section-26" id="section-26"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Apply a custom generator on the Iterator.
+The generator should accept the Iterator as a parameter, and yield the elements of the new Iterator</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.applyGenerator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">gen</span>)</span>{
+            <span class="hljs-keyword">return</span> Iterator(gen(iter))
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-27" id="section-27"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Takes an operator (a mapping function that takes two values and maps them into one value)
+and another Iterator, and applies the operator to each couple of elements of the two Iterators to produce another Iterator.</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.applyOperator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">operator, iter</span>)</span>{
+            <span class="hljs-keyword">var</span> applyOpGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">var</span> n = iter.next() 
+                    <span class="hljs-keyword">if</span>(n.done===<span class="hljs-literal">true</span>)
+                        <span class="hljs-keyword">break</span>
+
+                    <span class="hljs-keyword">yield</span> operator(i,n.value)
+                }
+            }
+            <span class="hljs-keyword">return</span> Iterator(applyOpGen())
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-28" id="section-28"></a>
 </div>
 <p>HEAVY METHODS
 THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
@@ -784,10 +826,10 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.sorted = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.sorted = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">arguments</span>
             <span class="hljs-keyword">var</span> arrayGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> array = self.toArray()
+                <span class="hljs-keyword">var</span> array = iter.toArray()
                 <span class="hljs-keyword">if</span>(args.length === <span class="hljs-number">0</span>){
                     array.sort()
                 }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> args[<span class="hljs-number">0</span>] === <span class="hljs-string">'string'</span>){
@@ -809,60 +851,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
                 }
             }
 
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(arrayGen())
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-27" id="section-27"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>sorted alias</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.sort = <span class="hljs-keyword">this</span>.sorted
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-28" id="section-28"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>Returns a new Iterator without repeated elements</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.distinct = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">var</span> distinctGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> iterator){
-                    <span class="hljs-keyword">if</span>(!s.has(e)){
-                        s.add(e)
-                        <span class="hljs-keyword">yield</span> e
-                    }
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(distinctGen())
+            <span class="hljs-keyword">return</span> Iterator(arrayGen())
         }
 
 </pre>
@@ -876,7 +865,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Returns a reversed version of the Iterator</p>
+<p>sorted alias</p>
 </div>
 <div class="body">
 </div>
@@ -884,18 +873,7 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.reversed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">var</span> thisInstance = <span class="hljs-keyword">this</span>
-            <span class="hljs-keyword">var</span> revGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> array = thisInstance.toArray().reverse()
-                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> array){
-                    <span class="hljs-keyword">yield</span> e
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(revGen())
-        }
-
-        <span class="hljs-keyword">this</span>.reverse = <span class="hljs-keyword">this</span>.reversed
+          <pre class="javascript">        iter.sort = iter.sorted
 
 </pre>
         </td>
@@ -905,6 +883,69 @@ THEY USE A SUPPORT ARRAY AND THUS CAN ONLY OPERATE ON A FINITE Iterator!!</p>
         <td class="docs">
           <div class="pilwrap">
   <a class="pilcrow" href="#section-30" id="section-30"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Returns a new Iterator without repeated elements</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.distinct = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> distinctGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>()
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> iterator){
+                    <span class="hljs-keyword">if</span>(!s.has(e)){
+                        s.add(e)
+                        <span class="hljs-keyword">yield</span> e
+                    }
+                }
+            }
+            <span class="hljs-keyword">return</span> Iterator(distinctGen())
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-31" id="section-31"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Returns a reversed version of the Iterator</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.reversed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> revGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+                <span class="hljs-keyword">var</span> array = iter.toArray().reverse()
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> e <span class="hljs-keyword">of</span> array){
+                    <span class="hljs-keyword">yield</span> e
+                }
+            }
+            <span class="hljs-keyword">return</span> Iterator(revGen())
+        }
+
+        iter.reverse = iter.reversed
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-32" id="section-32"></a>
 </div>
 <p>EAGER METHODS
 THEY CONSUME THE Iterator!</p>
@@ -919,7 +960,7 @@ THEY CONSUME THE Iterator!</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-31" id="section-31"></a>
+  <a class="pilcrow" href="#section-33" id="section-33"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -931,68 +972,10 @@ THEY CONSUME THE Iterator!</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.forEach = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.forEach = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 f(i)
             }
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-32" id="section-32"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>process(n,f)
-process n elements with the function f
-Like forEach, but only for the first n elements, then returns the rest of the Iterator</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.process = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n, f</span>)</span>{
-            <span class="hljs-keyword">var</span> ended = <span class="hljs-literal">false</span>
-            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;n &amp;&amp; !ended; i++){
-                <span class="hljs-keyword">var</span> e = iterator.next()
-                <span class="hljs-keyword">if</span>(e.done){
-                    ended = <span class="hljs-literal">true</span>
-                }
-                <span class="hljs-keyword">else</span>{
-                    f(e.value)
-                }
-            }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-33" id="section-33"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>equivalent to s.forEach(console.log)</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">this</span>.forEach(<span class="hljs-built_in">console</span>.log)
         }
 
 </pre>
@@ -1006,6 +989,64 @@ Like forEach, but only for the first n elements, then returns the rest of the It
 </div>
 <div class="dox">
 <div class="summary">
+<p>process(n,f)
+process n elements with the function f
+Like forEach, but only for the first n elements, then returns the rest of the Iterator</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.process = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n, f</span>)</span>{
+            <span class="hljs-keyword">var</span> ended = <span class="hljs-literal">false</span>
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>; i&lt;n &amp;&amp; !ended; i++){
+                <span class="hljs-keyword">var</span> e = iterator.next()
+                <span class="hljs-keyword">if</span>(e.done){
+                    ended = <span class="hljs-literal">true</span>
+                }
+                <span class="hljs-keyword">else</span>{
+                    f(e.value)
+                }
+            }
+            <span class="hljs-keyword">return</span> iter
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-35" id="section-35"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>equivalent to s.forEach(console.log)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.log = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            iter.forEach(<span class="hljs-built_in">console</span>.log)
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-36" id="section-36"></a>
+</div>
+<div class="dox">
+<div class="summary">
 <p>Finds the first occurence of an element e that satisfies f(e) and returns it</p>
 </div>
 <div class="body">
@@ -1014,7 +1055,7 @@ Like forEach, but only for the first n elements, then returns the rest of the It
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.find = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.find = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 <span class="hljs-keyword">if</span>(f(i)===<span class="hljs-literal">true</span>){
                     <span class="hljs-keyword">return</span> i
@@ -1030,12 +1071,13 @@ Like forEach, but only for the first n elements, then returns the rest of the It
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-35" id="section-35"></a>
+  <a class="pilcrow" href="#section-37" id="section-37"></a>
 </div>
 <div class="dox">
 <div class="summary">
 <p>Groups the elements of the Iterator using as key the result of function f applied to every element.
-Or, if you pass a String, groups by that property (in an Iterator of objects)</p>
+Or, if you pass a String, groups by that property (in an Iterator of objects).
+A second optional argument can be passed, to apply a terminal function to the grouped collections</p>
 </div>
 <div class="body">
 </div>
@@ -1043,9 +1085,9 @@ Or, if you pass a String, groups by that property (in an Iterator of objects)</p
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.groupBy = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.groupBy = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">var</span> obj = {}
-            <span class="hljs-keyword">this</span>.forEach(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>{
+            iter.forEach(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>{
                 <span class="hljs-keyword">var</span> key
                 <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> f === <span class="hljs-string">'function'</span>){
                     key  = f(e)
@@ -1061,6 +1103,19 @@ Or, if you pass a String, groups by that property (in an Iterator of objects)</p
                     obj[key].push(e)
                 }
             })
+
+            
+            <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">2</span>){
+                <span class="hljs-keyword">var</span> termFuncString = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]
+                <span class="hljs-keyword">var</span> iterOb = iteratorsObject(obj)
+                <span class="hljs-keyword">var</span> aggregatedObj = {}
+                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> iterOb){
+                    <span class="hljs-keyword">if</span>(iterOb[key].constructor === Iterator)
+                        aggregatedObj[key]=iterOb[key][termFuncString]()
+                }
+                <span class="hljs-keyword">return</span> aggregatedObj
+            }
+
             <span class="hljs-keyword">return</span> obj
         }
 
@@ -1071,7 +1126,7 @@ Or, if you pass a String, groups by that property (in an Iterator of objects)</p
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-36" id="section-36"></a>
+  <a class="pilcrow" href="#section-38" id="section-38"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1083,8 +1138,8 @@ Or, if you pass a String, groups by that property (in an Iterator of objects)</p
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.partition = <span class="hljs-keyword">this</span>.groupBy
-        <span class="hljs-keyword">this</span>.partitionBy = <span class="hljs-keyword">this</span>.groupBy
+          <pre class="javascript">        iter.partition = iter.groupBy
+        iter.partitionBy = iter.groupBy
 
 </pre>
         </td>
@@ -1093,7 +1148,7 @@ Or, if you pass a String, groups by that property (in an Iterator of objects)</p
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-37" id="section-37"></a>
+  <a class="pilcrow" href="#section-39" id="section-39"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1106,7 +1161,7 @@ Returns a single value</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.reduce = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f,start</span>)</span>{
+          <pre class="javascript">        iter.reduce = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f,start</span>)</span>{
             <span class="hljs-keyword">var</span> acc
             <span class="hljs-keyword">if</span>(start===<span class="hljs-literal">undefined</span>){
                 acc = iterator.next().value
@@ -1127,7 +1182,7 @@ Returns a single value</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-38" id="section-38"></a>
+  <a class="pilcrow" href="#section-40" id="section-40"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1140,60 +1195,14 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.count = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
+          <pre class="javascript">        iter.count = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
             <span class="hljs-keyword">var</span> acc = <span class="hljs-number">0</span>
             <span class="hljs-keyword">var</span> p = f === <span class="hljs-literal">undefined</span> ? <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span><span class="hljs-literal">true</span>: f
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                <span class="hljs-keyword">if</span>(check(i,f))
+                <span class="hljs-keyword">if</span>(check(i,p))
                     acc+=<span class="hljs-number">1</span>
             }
             <span class="hljs-keyword">return</span> acc
-        }
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-39" id="section-39"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>count alias</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.size = <span class="hljs-keyword">this</span>.count
-
-</pre>
-        </td>
-      </tr>
-    
-      <tr>
-        <td class="docs">
-          <div class="pilwrap">
-  <a class="pilcrow" href="#section-40" id="section-40"></a>
-</div>
-<div class="dox">
-<div class="summary">
-<p>Returns the first element</p>
-</div>
-<div class="body">
-</div>
-</div>
-
-        </td>
-        <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.first = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                <span class="hljs-keyword">return</span> i
-            }
         }
 
 </pre>
@@ -1207,6 +1216,52 @@ If no argument is specified, counts every element</p>
 </div>
 <div class="dox">
 <div class="summary">
+<p>count alias</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.size = iter.count
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-42" id="section-42"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Returns the first element</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.first = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                <span class="hljs-keyword">return</span> i
+            }
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-43" id="section-43"></a>
+</div>
+<div class="dox">
+<div class="summary">
 <p>returns true if every element satisfies the predicate / matches a regexp / contains all the values specified by an object, false otherwise</p>
 </div>
 <div class="body">
@@ -1215,7 +1270,7 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.every = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">p</span>)</span>{
+          <pre class="javascript">        iter.every = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">p</span>)</span>{
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 <span class="hljs-keyword">if</span>(!check(i,p)){
                     <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
@@ -1231,7 +1286,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-42" id="section-42"></a>
+  <a class="pilcrow" href="#section-44" id="section-44"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1243,7 +1298,7 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">         <span class="hljs-keyword">this</span>.some = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">p</span>)</span>{
+          <pre class="javascript">         iter.some = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">p</span>)</span>{
              <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                  <span class="hljs-keyword">if</span>(check(i,p)){
                      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
@@ -1259,7 +1314,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-43" id="section-43"></a>
+  <a class="pilcrow" href="#section-45" id="section-45"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1271,8 +1326,8 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">         <span class="hljs-keyword">this</span>.includes = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">element</span>)</span>{
-             <span class="hljs-keyword">return</span> self.some(<span class="hljs-function"><span class="hljs-params">x</span>=&gt;</span>x===element)
+          <pre class="javascript">         iter.includes = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">element</span>)</span>{
+             <span class="hljs-keyword">return</span> iter.some(<span class="hljs-function"><span class="hljs-params">x</span>=&gt;</span>x===element)
          }
 
 </pre>
@@ -1282,7 +1337,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-44" id="section-44"></a>
+  <a class="pilcrow" href="#section-46" id="section-46"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1294,7 +1349,7 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.last = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.last = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">var</span> l
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 l=i
@@ -1309,7 +1364,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-45" id="section-45"></a>
+  <a class="pilcrow" href="#section-47" id="section-47"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1321,7 +1376,7 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.min = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.min = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">var</span> m = <span class="hljs-built_in">Number</span>.MAX_VALUE
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 m = m&gt;i ? i : m
@@ -1336,7 +1391,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-46" id="section-46"></a>
+  <a class="pilcrow" href="#section-48" id="section-48"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1348,7 +1403,7 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.max = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.max = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">var</span> m = <span class="hljs-built_in">Number</span>.MIN_VALUE
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 m = m&lt;i ? i : m
@@ -1363,7 +1418,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-47" id="section-47"></a>
+  <a class="pilcrow" href="#section-49" id="section-49"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1375,7 +1430,7 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.sum = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.sum = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
             <span class="hljs-keyword">var</span> acc = <span class="hljs-number">0</span>
             <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
                 acc+=i
@@ -1390,7 +1445,35 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-48" id="section-48"></a>
+  <a class="pilcrow" href="#section-50" id="section-50"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>Multiplies all the elements of the Iterator
+If the Iterator is empty, returns 1</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        iter.product = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> acc = <span class="hljs-number">1</span>
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
+                acc *= i
+            }
+            <span class="hljs-keyword">return</span> acc
+        }
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-51" id="section-51"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1402,8 +1485,8 @@ If no argument is specified, counts every element</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.avg = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">var</span> array = self.toArray()
+          <pre class="javascript">        iter.avg = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> array = iter.toArray()
             <span class="hljs-keyword">var</span> sum = array.reduce(<span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>a+b)
             <span class="hljs-keyword">var</span> count = array.length
             <span class="hljs-keyword">return</span> sum / count
@@ -1416,7 +1499,7 @@ If no argument is specified, counts every element</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-49" id="section-49"></a>
+  <a class="pilcrow" href="#section-52" id="section-52"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1430,7 +1513,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.toArray = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
+          <pre class="javascript">        iter.toArray = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>)</span>{
             <span class="hljs-keyword">if</span>(n===<span class="hljs-literal">undefined</span>){
                 <span class="hljs-keyword">var</span> a = []
                 <span class="hljs-keyword">var</span> next = iterator.next()
@@ -1441,7 +1524,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
                 <span class="hljs-keyword">return</span> a
             }
             <span class="hljs-keyword">else</span> {
-                <span class="hljs-keyword">return</span> self.take(n).toArray()
+                <span class="hljs-keyword">return</span> iter.take(n).toArray()
             }
         }
 
@@ -1452,7 +1535,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-50" id="section-50"></a>
+  <a class="pilcrow" href="#section-53" id="section-53"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1464,10 +1547,11 @@ only n elements (or less) will be consumed and pushed into the array</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        <span class="hljs-keyword">this</span>.join = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sep</span>)</span>{
-            <span class="hljs-keyword">return</span> self.toArray().join(sep)
+          <pre class="javascript">        iter.join = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sep</span>)</span>{
+            <span class="hljs-keyword">return</span> iter.toArray().join(sep)
         }
 
+        <span class="hljs-keyword">return</span> iter
     }
 
 </pre>
@@ -1477,7 +1561,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-51" id="section-51"></a>
+  <a class="pilcrow" href="#section-54" id="section-54"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1496,7 +1580,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
                 <span class="hljs-keyword">yield</span> a
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(ofGen())
+        <span class="hljs-keyword">return</span> Iterator(ofGen())
     }
 
 </pre>
@@ -1506,7 +1590,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-52" id="section-52"></a>
+  <a class="pilcrow" href="#section-55" id="section-55"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1526,7 +1610,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
                 cur = f(cur)
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(lazyIterator())
+        <span class="hljs-keyword">return</span> Iterator(lazyIterator())
     }
 
 </pre>
@@ -1536,7 +1620,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-53" id="section-53"></a>
+  <a class="pilcrow" href="#section-56" id="section-56"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1554,7 +1638,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
                 <span class="hljs-keyword">yield</span> f(i)
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(tabGen())
+        <span class="hljs-keyword">return</span> Iterator(tabGen())
     }
 
 
@@ -1565,7 +1649,7 @@ only n elements (or less) will be consumed and pushed into the array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-54" id="section-54"></a>
+  <a class="pilcrow" href="#section-57" id="section-57"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1593,7 +1677,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
                 <span class="hljs-keyword">yield</span> i
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(ranGen())
+        <span class="hljs-keyword">return</span> Iterator(ranGen())
     }
 
 </pre>
@@ -1603,7 +1687,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-55" id="section-55"></a>
+  <a class="pilcrow" href="#section-58" id="section-58"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1626,7 +1710,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-56" id="section-56"></a>
+  <a class="pilcrow" href="#section-59" id="section-59"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1644,7 +1728,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
                 <span class="hljs-keyword">yield</span> f()
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(genGen())
+        <span class="hljs-keyword">return</span> Iterator(genGen())
     }
 
 </pre>
@@ -1654,7 +1738,28 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-57" id="section-57"></a>
+  <a class="pilcrow" href="#section-60" id="section-60"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>generate alias</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    Iterator.continually = Iterator.generate
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-61" id="section-61"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1675,7 +1780,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-58" id="section-58"></a>
+  <a class="pilcrow" href="#section-62" id="section-62"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1693,7 +1798,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
                 <span class="hljs-keyword">yield</span> e
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(fillGen())
+        <span class="hljs-keyword">return</span> Iterator(fillGen())
     }
 
 </pre>
@@ -1703,7 +1808,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-59" id="section-59"></a>
+  <a class="pilcrow" href="#section-63" id="section-63"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1717,7 +1822,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
         <td class="code highlight">
           <pre class="javascript">    Iterator.empty = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
         <span class="hljs-keyword">var</span> emptyGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{}
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(emptyGen())
+        <span class="hljs-keyword">return</span> Iterator(emptyGen())
     }
 
 </pre>
@@ -1727,7 +1832,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-60" id="section-60"></a>
+  <a class="pilcrow" href="#section-64" id="section-64"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1749,7 +1854,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-61" id="section-61"></a>
+  <a class="pilcrow" href="#section-65" id="section-65"></a>
 </div>
 <p>if null</p>
 
@@ -1765,7 +1870,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-62" id="section-62"></a>
+  <a class="pilcrow" href="#section-66" id="section-66"></a>
 </div>
 <p>if Iterable or Iterator</p>
 
@@ -1781,7 +1886,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-63" id="section-63"></a>
+  <a class="pilcrow" href="#section-67" id="section-67"></a>
 </div>
 <p>if object</p>
 
@@ -1793,7 +1898,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
                     <span class="hljs-keyword">yield</span> [e,a[e]]
                 }
             }
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(objGen())
+            <span class="hljs-keyword">return</span> Iterator(objGen())
         }
 
 </pre>
@@ -1803,7 +1908,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-64" id="section-64"></a>
+  <a class="pilcrow" href="#section-68" id="section-68"></a>
 </div>
 <p>if something else, call Iterator.of</p>
 
@@ -1819,7 +1924,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-65" id="section-65"></a>
+  <a class="pilcrow" href="#section-69" id="section-69"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1834,7 +1939,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
           <pre class="javascript">    Iterator.values = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a</span>)</span>{
         <span class="hljs-keyword">var</span> s = Iterator.from(a)
         <span class="hljs-keyword">if</span>(a.constructor === <span class="hljs-built_in">Map</span> || (<span class="hljs-keyword">typeof</span> a !== <span class="hljs-string">'string'</span> &amp;&amp; a.constructor !== <span class="hljs-built_in">Set</span> &amp;&amp; a.constructor !== <span class="hljs-built_in">Array</span>)){
-            <span class="hljs-keyword">return</span> s.map(<span class="hljs-function"><span class="hljs-params">e</span>=&gt;</span>e.value)
+            <span class="hljs-keyword">return</span> s.map(<span class="hljs-number">1</span>)
         }
         <span class="hljs-keyword">return</span> s
     }
@@ -1846,7 +1951,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-66" id="section-66"></a>
+  <a class="pilcrow" href="#section-70" id="section-70"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1866,7 +1971,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
                 }
             }
         }
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(cycleGen())
+        <span class="hljs-keyword">return</span> Iterator(cycleGen())
     }
 
 </pre>
@@ -1876,7 +1981,7 @@ With an object, it creates a Iterator of [<name>, <value>]</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-67" id="section-67"></a>
+  <a class="pilcrow" href="#section-71" id="section-71"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1891,7 +1996,7 @@ that returns a new Iterator over that array</p>
         <td class="code highlight">
           <pre class="javascript">    Iterator.augmentArrays = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
         <span class="hljs-built_in">Array</span>.prototype.iterator = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Iterator(<span class="hljs-keyword">this</span>)
+            <span class="hljs-keyword">return</span> Iterator(<span class="hljs-keyword">this</span>)
         }
     }
 
@@ -1902,7 +2007,7 @@ that returns a new Iterator over that array</p>
       <tr>
         <td class="docs">
           <div class="pilwrap">
-  <a class="pilcrow" href="#section-68" id="section-68"></a>
+  <a class="pilcrow" href="#section-72" id="section-72"></a>
 </div>
 <div class="dox">
 <div class="summary">
@@ -1919,13 +2024,38 @@ that returns a new Iterator over that array</p>
             <span class="hljs-keyword">delete</span> <span class="hljs-built_in">Array</span>.prototype.iterator
     }
 
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-73" id="section-73"></a>
+</div>
+<div class="dox">
+<div class="summary">
+<p>augments the arrays before executing the block, then removes the augmentation</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    Iterator.augmented = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">block</span>)</span>{
+        Iterator.augmentArrays()
+        block()
+        Iterator.removeArraysAugmentation()
+    }
+
     Iterator.noConflict = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         root.Iterator = previous_Iterator
         <span class="hljs-keyword">return</span> Iterator
     }
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isIterator</span>(<span class="hljs-params">i</span>)</span>{
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> i.next !== <span class="hljs-literal">undefined</span>
+        <span class="hljs-keyword">return</span> i.next !== <span class="hljs-literal">undefined</span> &amp;&amp; <span class="hljs-keyword">typeof</span> i.next === <span class="hljs-string">'function'</span>
     }
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isIterable</span>(<span class="hljs-params">i</span>)</span>{
@@ -1933,6 +2063,33 @@ that returns a new Iterator over that array</p>
     }
 
     Iterator.isIterable = <span class="hljs-function"><span class="hljs-params">i</span>=&gt;</span>isIterable(i)
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">iteratorsObject</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-keyword">var</span> iterOb = {}
+
+        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>.length===<span class="hljs-number">1</span>){
+            <span class="hljs-keyword">let</span> o = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>]
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> o){
+                <span class="hljs-keyword">if</span>(o[key].constructor === <span class="hljs-built_in">Array</span>){
+                    iterOb[key] = Iterator.from(o[key])
+                }
+                <span class="hljs-keyword">else</span> {
+                    iterOb[key] = o[key]
+                }
+            }
+        }
+
+        iterOb[<span class="hljs-string">"toArraysObject"</span>] = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> obj = {}
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> iterOb){
+                <span class="hljs-keyword">if</span>(iterOb[key].constructor === Iterator){
+                    obj[key] = iterOb[key].toArray()
+                }
+            }
+            <span class="hljs-keyword">return</span> obj
+        }
+        <span class="hljs-keyword">return</span> iterOb
+    }
 
     <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> exports !== <span class="hljs-string">'undefined'</span> ) {
         <span class="hljs-keyword">if</span>( <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports ) {
