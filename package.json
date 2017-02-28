@@ -1,6 +1,6 @@
 {
   "name": "iteratorgenerator",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Functional operators wrapper to iterators, implemented through javascript's generators",
   "main": "Iterator.js",
   "scripts": {
