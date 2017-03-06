@@ -494,7 +494,7 @@
                 var iterOb = iteratorsObject(obj)
                 var aggregatedObj = {}
                 for(var key in iterOb){
-                    if(iterOb[key].constructor === Iterator)
+                    if(typeof iterOb[key].groupBy === 'function')
                         aggregatedObj[key]=iterOb[key][termFuncString]()
                 }
                 return aggregatedObj
