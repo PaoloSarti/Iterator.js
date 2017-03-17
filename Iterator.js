@@ -25,6 +25,8 @@
         else if(isIterator(it)){
             iterator=it
         }
+        else if(typeof it === 'function')
+            return generate(it)
 
         /**
          * iterator
@@ -283,7 +285,7 @@
         }
 
         /**
-         * Generates a new Iterator, in which every element is an array of n elements of the original Iterator
+         * Generates a new Iterator, in which every element is an Iterator of n elements of the original Iterator
          */
         iter.buffer = function(n){
             var bufGen = function*(){
@@ -296,12 +298,12 @@
                     }
                     else{
                         j = 1
-                        yield a
+                        yield Iterator(a)
                         a = [i]
                     }
                 }
                 if(a.length>0)
-                    yield a
+                    yield Iterator(a)
             }
             return Iterator(bufGen())
         }
@@ -751,10 +753,7 @@
         return Iterator.range(startInclusive,endExclusive+1)
     }
 
-    /**
-     * infinite Iterator composed of the results of the function f
-     */
-    Iterator.generate = function(f){
+    function generate(f){
         var genGen = function*(){
             while(true){
                 yield f()
@@ -762,6 +761,11 @@
         }
         return Iterator(genGen())
     }
+
+    /**
+     * infinite Iterator composed of the results of the function f
+     */
+    Iterator.generate = generate
 
     /**
      * generate alias
