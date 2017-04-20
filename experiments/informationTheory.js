@@ -150,3 +150,11 @@ function decodeNaive(Iterator,decObj){
 
 var decodedIterator = decodeNaive(s.map(encodeFn(naiveEncoding)).flatten(),decoded)
 console.log('Decoded naive: '+decodedIterator.take(10).toArray())
+
+function evaluateRng(rand, intervals, n){
+    var a = Iterator.fill(0).toArray(intervals)
+    return Iterator(rand).take(n).reduce((acc,e)=>{
+        acc[Math.floor(e*intervals)] += 1
+        return acc
+    },a)
+}
