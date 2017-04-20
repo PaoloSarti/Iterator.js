@@ -309,14 +309,22 @@
         }
 
         /**
-         * Returns a Iterator that is made of partial sums of every previous element of the Iterator
+         * Returns a Iterator that cumulates the partial results of an accumulator.
+         * 
          */
-        iter.cumulate = function(){
+        iter.cumulate = function(fn, start){
             var cumulateGen = function*(){
-                var a = 0
+                var acc = start
+                if(fn == undefined){
+                    fn = (a,b)=>a+b
+                }
+                if(acc===undefined){
+                    acc = iterator.next().value
+                }
+                yield acc
                 for(var i of iterator){
-                    a = a + i
-                    yield a
+                    acc = fn(acc,i)
+                    yield acc
                 }
             }
             return Iterator(cumulateGen())

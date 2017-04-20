@@ -1,1 +1,1 @@
-var tree={"files":["Iterator.js","LICENSE.md","README.md","package.json"]};
+var tree={"files":["Iterator.js","LICENSE.md","package.json","README.md"],"dirs":{".git":{"dirs":{"hooks":{"files":["applypatch-msg.sample","commit-msg.sample","post-update.sample","pre-applypatch.sample","pre-commit.sample","pre-push.sample","pre-rebase.sample","prepare-commit-msg.sample","update.sample"]}}}}};

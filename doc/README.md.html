@@ -26,6 +26,10 @@
         <a href="#iterator.js">Iterator.js</a>
       </div>
 
+      <div class="heading h2">
+        <a href="#getting-started">Getting started</a>
+      </div>
+
     </div>
   </div>
   <div id="sidebar-toggle"></div>
@@ -41,12 +45,23 @@ Iterator.js
 This is because the functions are executed lazily.
 E.g. by iterating with a for..of, or by calling toArray or other methods that consume the Iterator.</p>
 <p>Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.</p>
+<p>This library depends heavily on ES6 features, such as generators, Maps, Sets, the for..of construct.
+For an EcmaScript 5 (ES6 features supported) implementation of some of these concepts, please see http://winterbe.github.io/streamjs/</p>
+<div class="pilwrap" id="getting-started">
+  <h2>
+    <a href="#getting-started" name="getting-started" class="pilcrow"></a>
+Getting started
+  </h2>
+</div>
 <p>You can install it via NPM.</p>
 <pre><code class="bash">npm install iteratorgenerator
 </code></pre>
-<p>Or you can use it client side by including https://cdn.rawgit.com/PaoloSarti/Iterator.js/master/Iterator.js</p>
-<p>This library depends heavily on ES6 features, such as generators, Maps, Sets, the for..of construct.
-For an EcmaScript 5 (ES6 features supported) implementation of some of these concepts, please see http://winterbe.github.io/streamjs/</p>
+<p>Then you can simply require them in your project.</p>
+<pre><code class="javascript"><span class="hljs-keyword">const</span> Iterator = <span class="hljs-built_in">require</span>(<span class="hljs-string">'iteratorgenerator'</span>)
+</code></pre>
+<p>Or you can include them directly in a Web page, thanks to RawGit</p>
+<pre><code class="html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.rawgit.com/PaoloSarti/Iterator.js/master/Iterator.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
 </div>
   </div>
 </body>

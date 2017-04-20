@@ -46,12 +46,12 @@
 <div class="dox">
 <div class="summary">
 <p>An Iterator is a wrapper to JavaScript's iterators that adds functional operators such as map, reduce.</p>
-</div>
-<div class="body">
 <p>Most of its methods return a new Iterator, but they don't execute any operation until explicitly requested.
 This is because the functions are executed lazily.
 E.g. by iterating with a for..of, or by calling the toArray or other methods that consume the Iterator, so that it can't be safely iterated again.</p>
 <p>Thanks to the laziness of the execution (achieved through generators), infinite Iterators can be manipulated.</p>
+</div>
+<div class="body">
 </div>
 </div>
 
@@ -73,6 +73,8 @@ E.g. by iterating with a for..of, or by calling the toArray or other methods tha
         <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(isIterator(it)){
             iterator=it
         }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> it === <span class="hljs-string">'function'</span>)
+            <span class="hljs-keyword">return</span> generate(it)
 
 </pre>
         </td>
@@ -689,7 +691,7 @@ and the second is the element of the Iterator</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Generates a new Iterator, in which every element is an array of n elements of the original Iterator</p>
+<p>Generates a new Iterator, in which every element is an Iterator of n elements of the original Iterator</p>
 </div>
 <div class="body">
 </div>
@@ -708,12 +710,12 @@ and the second is the element of the Iterator</p>
                     }
                     <span class="hljs-keyword">else</span>{
                         j = <span class="hljs-number">1</span>
-                        <span class="hljs-keyword">yield</span> a
+                        <span class="hljs-keyword">yield</span> Iterator(a)
                         a = [i]
                     }
                 }
                 <span class="hljs-keyword">if</span>(a.length&gt;<span class="hljs-number">0</span>)
-                    <span class="hljs-keyword">yield</span> a
+                    <span class="hljs-keyword">yield</span> Iterator(a)
             }
             <span class="hljs-keyword">return</span> Iterator(bufGen())
         }
@@ -729,7 +731,7 @@ and the second is the element of the Iterator</p>
 </div>
 <div class="dox">
 <div class="summary">
-<p>Returns a Iterator that is made of partial sums of every previous element of the Iterator</p>
+<p>Returns a Iterator that cumulates the partial results of an accumulator.</p>
 </div>
 <div class="body">
 </div>
@@ -737,12 +739,19 @@ and the second is the element of the Iterator</p>
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">        iter.cumulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          <pre class="javascript">        iter.cumulate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fn, start</span>)</span>{
             <span class="hljs-keyword">var</span> cumulateGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-                <span class="hljs-keyword">var</span> a = <span class="hljs-number">0</span>
+                <span class="hljs-keyword">var</span> acc = start
+                <span class="hljs-keyword">if</span>(fn == <span class="hljs-literal">undefined</span>){
+                    fn = <span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>a+b
+                }
+                <span class="hljs-keyword">if</span>(acc===<span class="hljs-literal">undefined</span>){
+                    acc = iterator.next().value
+                }
+                <span class="hljs-keyword">yield</span> acc
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i <span class="hljs-keyword">of</span> iterator){
-                    a = a + i
-                    <span class="hljs-keyword">yield</span> a
+                    acc = fn(acc,i)
+                    <span class="hljs-keyword">yield</span> acc
                 }
             }
             <span class="hljs-keyword">return</span> Iterator(cumulateGen())
@@ -1110,7 +1119,7 @@ A second optional argument can be passed, to apply a terminal function to the gr
                 <span class="hljs-keyword">var</span> iterOb = iteratorsObject(obj)
                 <span class="hljs-keyword">var</span> aggregatedObj = {}
                 <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> iterOb){
-                    <span class="hljs-keyword">if</span>(iterOb[key].constructor === Iterator)
+                    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> iterOb[key].groupBy === <span class="hljs-string">'function'</span>)
                         aggregatedObj[key]=iterOb[key][termFuncString]()
                 }
                 <span class="hljs-keyword">return</span> aggregatedObj
@@ -1703,6 +1712,15 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
         <span class="hljs-keyword">return</span> Iterator.range(startInclusive,endExclusive+<span class="hljs-number">1</span>)
     }
 
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate</span>(<span class="hljs-params">f</span>)</span>{
+        <span class="hljs-keyword">var</span> genGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
+                <span class="hljs-keyword">yield</span> f()
+            }
+        }
+        <span class="hljs-keyword">return</span> Iterator(genGen())
+    }
+
 </pre>
         </td>
       </tr>
@@ -1722,14 +1740,7 @@ With no arguments, it's just an infinite Iterator of integers starting from zero
 
         </td>
         <td class="code highlight">
-          <pre class="javascript">    Iterator.generate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">f</span>)</span>{
-        <span class="hljs-keyword">var</span> genGen = <span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>)</span>{
-            <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>){
-                <span class="hljs-keyword">yield</span> f()
-            }
-        }
-        <span class="hljs-keyword">return</span> Iterator(genGen())
-    }
+          <pre class="javascript">    Iterator.generate = generate
 
 </pre>
         </td>
