@@ -737,17 +737,20 @@
      * With no arguments, it's just an infinite Iterator of integers starting from zero.
      */
     Iterator.range = function(startInclusive, endExclusive, step){
+        var start = startInclusive
+        var end = endExclusive
         if(step===undefined)
             step=1
-
-        if(endExclusive === undefined)
-            endExclusive = Number.MAX_VALUE
-
-        if(startInclusive === undefined)
-            startInclusive = 0
-
+        if(endExclusive === undefined){
+            end = startInclusive
+            start = 0
+        }
+        if(startInclusive === undefined){
+            end = Number.MAX_VALUE
+            start = 0
+        }
         var ranGen = function*(){
-            for(var i= startInclusive; i<endExclusive; i+=step){
+            for(var i= start; i<end; i+=step){
                 yield i
             }
         }
