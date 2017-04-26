@@ -19,7 +19,10 @@
         var iter = {}
 
         var iterator
-        if(isIterable(it)){
+        if(it === null || it === undefined){
+            iterator = function*(){}()  //empty generator
+        }
+        else if(isIterable(it)){
             iterator = it[Symbol.iterator]()
         }
         else if(isIterator(it)){
@@ -114,7 +117,10 @@
          */
         function mapElement(e,f){
             if(typeof f === 'string' || typeof f === 'number'){
-                return e[f]
+                if(typeof e[f] === 'function')
+                    return e[f]()
+                else
+                    return e[f]
             }
             else if(typeof f === 'function'){
                 return f(e)
@@ -264,9 +270,8 @@
          * Filter by providing a predicate on the index (starting from 0 from the current item)
          */
         iter.filterByIndex = function(f){
-            return iter.zipWithIndex().filter(e=>f(e[0])).map(e=>e[1])
+            return iter.zipWithIndex().filter(e=>f(e[0])).map(1)
         }
-
 
         /**
          * Append one or more argument to the Iterator lazily
@@ -298,14 +303,38 @@
                     }
                     else{
                         j = 1
-                        yield Iterator(a)
+                        yield a
                         a = [i]
                     }
                 }
                 if(a.length>0)
-                    yield Iterator(a)
+                    yield a
             }
             return Iterator(bufGen())
+        }
+
+        /**
+         * Returns sliding Iterators of up to n elements with the specified stride (default = 1)
+         */
+        iter.window = function(n, stride = 1){
+            var windowGen = function*(){
+                var w = []
+                var j = 0
+                for(let i of iterator){
+                    w.push(i)
+                    if(w.length > n){
+                        w.shift()
+                    }
+                    j += 1
+                    if(j == stride){
+                        yield Iterator(w)
+                        j = 0
+                    }
+                }
+                if(w.length > 0)
+                    yield Iterator(w)
+            }
+            return Iterator(windowGen())
         }
 
         /**
@@ -564,6 +593,16 @@
                 return i
             }
         }
+
+        /**
+         * first alias
+         */
+        iter.head = iter.first
+
+        /**
+         * Alias for skip 1
+         */
+        iter.tail = ()=>iter.skip(1)
 
         /**
          * returns true if every element satisfies the predicate / matches a regexp / contains all the values specified by an object, false otherwise
@@ -862,11 +901,18 @@
     }
 
     /**
+     * Iterator of random integers between 0 (inclusive) and n (exclusive)
+     */
+    Iterator.randInts = function(n){
+        return Iterator.random().map(i=>Math.floor(i*n))
+    }
+
+    /**
      * Augments the Array prototype with the "iterator" function,
      * that returns a new Iterator over that array
      */
-    Iterator.augmentArrays = function(){
-        Array.prototype.iterator = function(){
+    Iterator.augmentArrays = function(name = 'iterator'){
+        Array.prototype[name] = function(){
             return Iterator(this)
         }
     }
@@ -874,18 +920,18 @@
     /**
      * Remove the type augmentation
      */
-    Iterator.removeArraysAugmentation = function(){
-        if(Array.prototype.iterator!==undefined)
-            delete Array.prototype.iterator
+    Iterator.removeArraysAugmentation = function(name = 'iterator'){
+        if(Array.prototype[name]!==undefined)
+            delete Array.prototype[name]
     }
 
     /**
      * augments the arrays before executing the block, then removes the augmentation
      */
-    Iterator.augmented = function(block){
-        Iterator.augmentArrays()
+    Iterator.augmented = function(block, name = 'iterator'){
+        Iterator.augmentArrays(name)
         block()
-        Iterator.removeArraysAugmentation()
+        Iterator.removeArraysAugmentation(name)
     }
 
     Iterator.noConflict = function() {
