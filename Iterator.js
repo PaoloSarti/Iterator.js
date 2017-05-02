@@ -331,8 +331,8 @@
                         j = 0
                     }
                 }
-                if(w.length > 0)
-                    yield Iterator(w)
+                /*if(w.length > 0)
+                    yield Iterator(w)*/
             }
             return Iterator(windowGen())
         }
