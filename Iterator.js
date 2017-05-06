@@ -800,7 +800,10 @@
      * Like range, but the second parameter is included. The third parameter is NOT supported here
      */
     Iterator.rangeInclusive = function(startInclusive, endInclusive){
-        return Iterator.range(startInclusive,endExclusive+1)
+        if (endInclusive === undefined)
+            return Iterator.range(startInclusive+1)
+        else
+            return Iterator.range(startInclusive,endInclusive+1)
     }
 
     function generate(f){
