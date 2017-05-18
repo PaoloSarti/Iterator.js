@@ -9,4 +9,10 @@ console.log(Iterator(a).map(rectify).toArray())
 console.log(Iterator(a).map(softplus).toArray())
 console.log(Iterator.random().take(1000).groupBy(i=>i>0.5, 'count'))
 
-var factorials = ()=>Iter.range().skip(1).cumulate((a,b)=>a*b)
+function prodN(){
+    return Array.from(arguments).reduce((a,b)=>a*b, 1)
+}
+
+var factorials = ()=>Iter.range().skip(1).cumulate(prodN)
+
+var factorial = n=>Iter.range(1,n+1).reduce(prodN)
