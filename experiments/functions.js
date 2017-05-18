@@ -13,6 +13,8 @@ function prodN(){
     return Array.from(arguments).reduce((a,b)=>a*b, 1)
 }
 
+var Iter = Iterator
+
 var factorials = ()=>Iter.range().skip(1).cumulate(prodN)
 
 const factorial = n=>Iter.range(2,n+1).product()
