@@ -314,9 +314,10 @@
         }
 
         /**
-         * Returns sliding Iterators of up to n elements with the specified stride (default = 1)
+         * Returns sliding arrays of up to n elements with the specified stride (default = 1)
+         * If the buffer parameter is true, then it buffers until n elements are taken.
          */
-        iter.window = function(n, stride = 1){
+        iter.window = function(n, stride = 1, buffer = true){
             var windowGen = function*(){
                 var w = []
                 var j = 0
@@ -326,8 +327,8 @@
                         w.shift()
                     }
                     j += 1
-                    if(j == stride){
-                        yield Iterator(w)
+                    if(j >= stride && (buffer?w.length == n:true)){
+                        yield w.slice()
                         j = 0
                     }
                 }

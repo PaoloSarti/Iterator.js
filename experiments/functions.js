@@ -24,3 +24,15 @@ const binomial = (n,k)=>Iter.range(1,k+1).map(i=>(n+1-i)/i).product()
 const binomials = n=>Iter.range(0,n+1).map(i=>binomial(n,i)).toArray()
 
 const binomialsPyramid = n=>Iter.range(0,n).map(binomials).toArray()
+
+var dot = (l1,l2) => Iter(l1).zip(Iter(l2)).reduce((acc,e)=>acc+e[0]*e[1],0)
+
+var norm = l => Math.sqrt(Iter(l).reduce((acc,e)=>acc+e*e,0))
+
+var ssd = (l1,l2)=>Iter(l1).zip(Iter(l2)).reduce((acc,e)=>acc+(e[1]-e[0])*(e[1]-e[0]),0)
+
+var cosine = (l1,l2) => {
+    let n1 = norm(l1)
+    let n2 = norm(l2)
+    return dot(l1,l2)/(n1*n2)
+}
